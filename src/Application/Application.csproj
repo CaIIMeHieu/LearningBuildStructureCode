@@ -12,4 +12,11 @@
     <ProjectReference Include="..\Domain\Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Behaviors\" />
+    <Folder Include="DependencyInjection\Extentions\" />
+    <Folder Include="DependencyInjection\Options\" />
+    <Folder Include="Abstractions\" />
+  </ItemGroup>
+
 </Project>
