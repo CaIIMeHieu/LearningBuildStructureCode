@@ -8,10 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Abstractions\Entities\" />
     <Folder Include="Abstractions\Repositories\" />
     <Folder Include="Enumerations\" />
-    <Folder Include="Entities\" />
   </ItemGroup>
 
 </Project>
