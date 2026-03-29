@@ -19,6 +19,7 @@ public static class ServiceCollectionExtensions
         services.AddMediatR(
             conf => conf.RegisterServicesFromAssembly(AssemblyReference.Assembly)
         ).AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationPipelineBehavior<,>))
+         .AddTransient(typeof(IPipelineBehavior<,>),typeof(TransactionPipelineBehavior<,>))
          .AddTransient(typeof(IPipelineBehavior<,>), typeof(PerformancePipelineBehavior<,>))
         .AddValidatorsFromAssembly(AssemblyReference.Assembly);
 
