@@ -19,5 +19,11 @@
 			PrivateAssets="all"
 			Condition="$(MSBuildProjectExtension) == '.csproj'"
 		/>
+		<PackageReference 
+			Include="Newtonsoft.Json" 
+			Version="13.0.4" 
+			PrivateAssets="all"
+			Condition="$(MSBuildProjectExtension) == '.csproj'"
+		/>
 	</ItemGroup>
 </Project>

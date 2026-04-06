@@ -28,8 +28,9 @@ public class RegisterCommandHandler : ICommandHandler<Command.RegisterCommand, R
         {
             FullName = request.FullName,
             Email = request.Email,
-            UserName = request.Email // Identity dùng UserName để login
-        };
+            UserName = request.Email, // Identity dùng UserName để login
+            PasswordHash = request.Password // Password sẽ được hash tự động bởi UserManager.CreateAsync
+        };        
         var result = await _userManager.CreateAsync(user, request.Password);
 
         if (!result.Succeeded)
@@ -43,6 +44,10 @@ public class RegisterCommandHandler : ICommandHandler<Command.RegisterCommand, R
 
         var accessToken = _jwtService.GenerateAccessToken(user, roles);
         var refreshToken = _jwtService.GenerateRefreshToken();
+
+        user.RefreshToken = refreshToken;
+        user.RefreshTokenExpiry = DateTime.UtcNow.AddDays(7);
+        await _userManager.UpdateAsync(user);
 
         return Result.Success(new Response.LoginResponse(accessToken,refreshToken));
 

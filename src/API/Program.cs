@@ -44,8 +44,21 @@ builder.Services.AddIdentity<AppUser, IdentityRole<Guid>>(options =>
     .AddDefaultTokenProviders();
 
 builder.Services.AddJwtAuthentication(builder.Configuration);
+builder.Services.AddMemoryCache();
 
 var app = builder.Build();
+
+using( var scope = app.Services.CreateScope() )
+{
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
+    foreach( var role in new[] {"Admin","User"} )
+    {
+        if( !await roleManager.RoleExistsAsync(role) )
+        {
+            await roleManager.CreateAsync(new IdentityRole<Guid>(role));
+        }
+    }    
+}    
 
 if (app.Environment.IsDevelopment())
 {

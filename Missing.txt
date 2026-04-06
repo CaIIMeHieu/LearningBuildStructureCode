@@ -1,3 +1,12 @@
 Khi nào dùng List, khi nao dùng IEnumerable, khi nào dùng Collection
 
 Typeof
+
+Các chính sách xử lý lỗi tăng cường khả năng chống chịu cho server :
+	1. Retry Policy (Chính sách thử lại): Khi một lỗi tạm thời xảy ra, server sẽ tự động thử lại yêu cầu sau một khoảng thời gian tăng dần
+	   Điều này giúp giảm thiểu tác động của các lỗi tạm thời như mất kết nối mạng hoặc quá tải.
+	2. Ngắt mạch xử lý đến một dịch vụ khi nó gặp lỗi liên tục
+	3. Giới hạn số lượng request đồng thời
+	4. Giới hạn timeout cho các request
+	5. Cung cấp giá trị dự phòng khi một dịch vụ không khả dụng
+

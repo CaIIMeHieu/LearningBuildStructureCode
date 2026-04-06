@@ -3,11 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Application.Interface;
 using Infrastructure.Authentication;
+using Application.DependencyInjection.Options;
+using Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using StackExchange.Redis;
 
 namespace Infrastructure.DependencyInjection.Extensions;
 
@@ -48,6 +53,22 @@ public static class ServiceCollectionExtensions
                 };
             });
 
+        return services;
+    }
+
+    public static IServiceCollection AddRedisConfiguration(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        var redisConfiguration = new RedisOptions();
+        configuration.GetSection("RedisConfiguration").Bind(redisConfiguration);
+        services.AddSingleton(redisConfiguration);
+        if (!redisConfiguration.Enable)
+            return services;
+
+        services.AddSingleton<IConnectionMultiplexer>(_ => ConnectionMultiplexer.Connect(redisConfiguration.ConnectionString));
+        services.AddStackExchangeRedisCache(option => option.Configuration = redisConfiguration.ConnectionString);
+        services.AddSingleton<ICacheService, CacheService>();
         return services;
     }
 }

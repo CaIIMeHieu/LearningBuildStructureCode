@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Application.Attributes;
 using Application.UserCases.V1.Product;
 using Asp.Versioning;
 using Contract.Abstractions.Shared;
@@ -28,10 +29,15 @@ public class ProductsController : ApiController
     [HttpGet]
     [ProducesResponseType(typeof(Result<List<Response.ProductResponse>>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [Cache(1000)]
     public async Task<IActionResult> GetProducts()
     {
         var result = await Sender.Send(new Query.GetProductsQuery());
-        return Ok(result);
+        if( result.IsSuccess )
+        {
+            return Ok(result);
+        }
+        return HandlerFailure(result);
     }
 
 
@@ -41,9 +47,14 @@ public class ProductsController : ApiController
     public async Task<IActionResult> Products( Guid productId )
     {
         var result = await Sender.Send( new GetProductByIdQuery(productId));
-        return Ok(result); 
+        if (result.IsSuccess)
+        {
+            return Ok(result); 
+        }
+        return HandlerFailure(result);
     }
 
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     [ProducesResponseType(typeof(Result), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]

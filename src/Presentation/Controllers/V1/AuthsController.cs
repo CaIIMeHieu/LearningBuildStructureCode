@@ -22,13 +22,21 @@ public class AuthsController: ApiController
     public async Task<IActionResult> Login([FromBody] Application.UserCases.V1.Auth.Command.LoginCommand loginCommand)
     {
         var result = await Sender.Send(loginCommand);
-        return Ok(result);
+        if( result.IsSuccess )
+        {
+            return Ok(result);
+        }
+        return HandlerFailure(result);
     }
 
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] Application.UserCases.V1.Auth.Command.RegisterCommand registerCommand)
     {
         var result = await Sender.Send(registerCommand);
-        return Ok(result);
+        if( result.IsSuccess )
+        {
+            return Ok(result);
+        }
+        return HandlerFailure(result);
     }
 }
