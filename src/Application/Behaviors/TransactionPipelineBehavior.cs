@@ -50,7 +50,7 @@ where TRequest : notnull
 
         //IMPORTANT: passing "TransactionScopeAsyncFlowOption.Enabled" to the TransactionScope constructor. This is necessary to be able to use it with async/await.
         using (var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
-        {
+        {            
             var response = await next();
             await _unitOfWork.SaveChangesAsync(cancellationToken);
             transaction.Complete();

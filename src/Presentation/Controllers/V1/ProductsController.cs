@@ -7,6 +7,7 @@ using Application.UserCases.V1.Product;
 using Asp.Versioning;
 using Contract.Abstractions.Shared;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Presentation.Abstract;
@@ -16,6 +17,7 @@ using static Application.UserCases.V1.Product.Query;
 namespace Presentation.Controllers.V1;
 
 [ApiVersion(1)]
+[Authorize]
 public class ProductsController : ApiController
 {
     public ProductsController(ISender sender) : base(sender)
@@ -23,7 +25,7 @@ public class ProductsController : ApiController
 
     }
 
-    [HttpGet("GetProducts")]
+    [HttpGet]
     [ProducesResponseType(typeof(Result<List<Response.ProductResponse>>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> GetProducts()
@@ -41,4 +43,14 @@ public class ProductsController : ApiController
         var result = await Sender.Send( new GetProductByIdQuery(productId));
         return Ok(result); 
     }
+
+    [HttpPost]
+    [ProducesResponseType(typeof(Result), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> CreateProduct([FromBody] Command.CreateProductCommand createProductCommand )
+    { 
+        var result = await Sender.Send(createProductCommand);
+        return Ok(result);
+    }
+
 }

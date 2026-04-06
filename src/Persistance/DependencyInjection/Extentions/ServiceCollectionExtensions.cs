@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Persistance.DBContext;
 using Persistance.DependencyInjection.Options;
+using Domain.Abstractions;
 
 namespace Persistance.DependencyInjection.Extentions;
 
@@ -24,34 +25,34 @@ public static class ServiceCollectionExtensions
 
             #region ============== SQL-SERVER-STRATEGY-1 ==============
 
-            builder
-            .EnableDetailedErrors(true)
-            .EnableSensitiveDataLogging(true)
-            .UseLazyLoadingProxies(true) // => If UseLazyLoadingProxies, all of the navigation fields should be VIRTUAL
-            .UseSqlServer(
-                connectionString: configuration.GetConnectionString("ConnectionStrings"),
-                sqlServerOptionsAction: optionsBuilder
-                        => optionsBuilder.ExecutionStrategy(
-                                dependencies => new SqlServerRetryingExecutionStrategy(
-                                    dependencies: dependencies,
-                                    maxRetryCount: options.CurrentValue.MaxRetryCount,
-                                    maxRetryDelay: options.CurrentValue.MaxRetryDelay,
-                                    errorNumbersToAdd: options.CurrentValue.ErrorNumbersToAdd))
-                            .MigrationsAssembly(typeof(ApplicationDbContext).Assembly.GetName().Name));
-
-            #endregion ============== SQL-SERVER-STRATEGY-1 ==============
-
-            #region ============== SQL-SERVER-STRATEGY-2 ==============
-
             //builder
             //.EnableDetailedErrors(true)
             //.EnableSensitiveDataLogging(true)
             //.UseLazyLoadingProxies(true) // => If UseLazyLoadingProxies, all of the navigation fields should be VIRTUAL
             //.UseSqlServer(
             //    connectionString: configuration.GetConnectionString("ConnectionStrings"),
-            //        sqlServerOptionsAction: optionsBuilder
-            //            => optionsBuilder
-            //            .MigrationsAssembly(typeof(ApplicationDbContext).Assembly.GetName().Name));
+            //    sqlServerOptionsAction: optionsBuilder
+            //            => optionsBuilder.ExecutionStrategy(
+            //                    dependencies => new SqlServerRetryingExecutionStrategy(
+            //                        dependencies: dependencies,
+            //                        maxRetryCount: options.CurrentValue.MaxRetryCount,
+            //                        maxRetryDelay: options.CurrentValue.MaxRetryDelay,
+            //                        errorNumbersToAdd: options.CurrentValue.ErrorNumbersToAdd))
+            //                .MigrationsAssembly(typeof(ApplicationDbContext).Assembly.GetName().Name));
+
+            #endregion ============== SQL-SERVER-STRATEGY-1 ==============
+
+            #region ============== SQL-SERVER-STRATEGY-2 ==============
+
+            builder
+            .EnableDetailedErrors(true)
+            .EnableSensitiveDataLogging(true)
+            .UseLazyLoadingProxies(true) // => If UseLazyLoadingProxies, all of the navigation fields should be VIRTUAL
+            .UseSqlServer(
+                connectionString: configuration.GetConnectionString("ConnectionStrings"),
+                    sqlServerOptionsAction: optionsBuilder
+                        => optionsBuilder
+                        .MigrationsAssembly(typeof(ApplicationDbContext).Assembly.GetName().Name));
 
             #endregion ============== SQL-SERVER-STRATEGY-2 ==============
         });

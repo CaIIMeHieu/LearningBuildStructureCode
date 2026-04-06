@@ -1,4 +1,8 @@
 using Application.DependencyInjection.Extentions;
+using Domain.Entities;
+using Infrastructure.DependencyInjection.Extensions;
+using Microsoft.AspNetCore.Identity;
+using Persistance.DBContext;
 using Persistance.DependencyInjection.Extentions;
 using Persistance.DependencyInjection.Options;
 using Serilog;
@@ -29,6 +33,18 @@ builder.Services.ConfigureSqlServerRetryOptions(builder.Configuration.GetSection
 builder.Services.AddConfigurationAutoMapper();
 builder.Services.AddRepositoryBaseConfiguration();
 
+builder.Services.AddIdentity<AppUser, IdentityRole<Guid>>(options =>
+{
+    options.Password.RequiredLength = 8;
+    options.Password.RequireDigit = true;
+    options.Password.RequireUppercase = true;
+    options.User.RequireUniqueEmail = true;
+})
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddDefaultTokenProviders();
+
+builder.Services.AddJwtAuthentication(builder.Configuration);
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -38,6 +54,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 

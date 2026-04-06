@@ -1,0 +1,3 @@
+Khi nào dùng List, khi nao dùng IEnumerable, khi nào dùng Collection
+
+Typeof

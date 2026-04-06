@@ -9,6 +9,7 @@ using Application.Abstractions;
 using AutoMapper;
 using Contract.Abstractions.Message;
 using Contract.Abstractions.Shared;
+using Domain.Abstractions;
 using MediatR;
 
 namespace Application.UserCases.V1.Product.Handler;

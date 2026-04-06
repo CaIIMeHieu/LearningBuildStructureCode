@@ -4,6 +4,7 @@
     <File Path="Directory.Build.props" />
   </Folder>
   <Folder Name="/src/">
+    <File Path="Missing.txt" />
     <Project Path="src/API/API.csproj" />
     <Project Path="src/Application/Application.csproj" />
     <Project Path="src/Contract/Contract.csproj" />

@@ -24,9 +24,12 @@ public class PerformancePipelineBehavior<TRequest, TResponse> :
 
     public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
     {
-        _timer.Start();
+        _logger.LogInformation("Handling request: {Name} {@Request}", typeof(TRequest).Name, request);
+        _timer.Start();        
         var response = await next();
         _timer.Stop();
+        _logger.LogInformation("Handled request: {Name} ({ElapsedMilliseconds} milliseconds) {@Request}",
+            typeof(TRequest).Name, _timer.ElapsedMilliseconds, request);
 
         var elapsedMilliseconds = _timer.ElapsedMilliseconds;
 
