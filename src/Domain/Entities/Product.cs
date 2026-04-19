@@ -14,14 +14,18 @@ public class Product : AggregateRoot
     public decimal Price { get; private set; }
     public string Description { get; private set; }
 
-    public static Product Create( string Name, decimal Price, string Description )
+    protected Product() { }
+    private Product(Guid id) : base(id)
     {
-        var product = new Product
+    }
+
+    public static Product Create( string name, decimal price, string description )
+    {
+        var product = new Product(Guid.NewGuid())
         {
-            Id = Guid.NewGuid(),
-            Name = Name,
-            Price = Price,
-            Description = Description
+            Name = name,
+            Price = price,
+            Description = description
         };
 
         product.RaiseDomainEvent(new ProductCreatedEvent(product.Id, product.Name, product.Price, product.Description));
@@ -29,14 +33,33 @@ public class Product : AggregateRoot
         return product;
     }
 
-    public void Update( string Name, decimal Price, string Description )
+    public void Update( string name, decimal price, string description )
     {
-        this.Name = Name;
-        this.Price = Price;
-        this.Description = Description;
+        Name = name;
+        Price = price;
+        Description = description;
         // Có thể Raise một sự kiện khác nếu cần
     }
 
     public record ProductCreatedEvent(Guid Id, string Name, decimal Price, string Description) : IDomain;
+
+    /*
+      Cấu trúc ngắn gọn, tương đương với 
+        public class ProductCreatedEvent
+        {
+            public Guid Id { get; init; }
+            public string Name { get; init; }
+            public decimal Price { get; init; }
+            public string Description { get; init; }
+
+            public ProductCreatedEvent(Guid Id, string Name, decimal Price, string Description)
+            {
+                this.Id = Id;
+                this.Name = Name;
+                this.Price = Price;
+                this.Description = Description;
+            }
+        }
+    */
 
 }

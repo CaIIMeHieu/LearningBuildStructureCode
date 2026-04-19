@@ -70,7 +70,7 @@ public class ProductsController : ApiController
         return HandlerFailure(result);
     }
 
-    [Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "Admin")]
     [HttpPost]
     [ProducesResponseType(typeof(Result), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]

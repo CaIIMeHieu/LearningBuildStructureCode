@@ -66,7 +66,7 @@ builder.Services.ConfigureHttpClientDefaults(http =>
 
 var app = builder.Build();
 
-using( var scope = app.Services.CreateScope() )
+using ( var scope = app.Services.CreateScope() )
 {
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
     foreach( var role in new[] {"Admin","User"} )
