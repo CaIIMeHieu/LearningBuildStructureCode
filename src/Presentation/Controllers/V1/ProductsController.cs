@@ -18,7 +18,7 @@ using static Application.UserCases.V1.Product.Query;
 namespace Presentation.Controllers.V1;
 
 [ApiVersion(1)]
-[Authorize]
+//[Authorize]
 public class ProductsController : ApiController
 {
     public ProductsController(ISender sender) : base(sender)
@@ -26,14 +26,30 @@ public class ProductsController : ApiController
 
     }
 
-    [HttpGet]
+    [HttpGet("GetProductsGood")]
     [ProducesResponseType(typeof(Result<List<Response.ProductResponse>>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [Cache(1000)]
-    public async Task<IActionResult> GetProducts()
+    //[Cache(1000)]
+    public async Task<IActionResult> GetProductsGood()
     {
         var result = await Sender.Send(new Query.GetProductsQuery());
         if( result.IsSuccess )
+        {
+            return Ok(result);
+        }
+        return HandlerFailure(result);
+    }
+
+    [HttpGet("GetProductsBad")]
+    [ProducesResponseType(typeof(Result<List<Response.ProductResponse>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public IActionResult GetProductsBad() // Xóa bỏ async Task<>
+    {
+        // TỒI: Chặn đứng luồng hiện tại cho đến khi có kết quả. 
+        // Hệ thống mất đi 1 luồng xử lý trong thời gian chờ.
+        var result = Sender.Send(new Query.GetProductsQuery()).GetAwaiter().GetResult();
+
+        if (result.IsSuccess)
         {
             return Ok(result);
         }

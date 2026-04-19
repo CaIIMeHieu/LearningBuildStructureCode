@@ -7,6 +7,7 @@
     <File Path="Missing.txt" />
     <Project Path="src/API/API.csproj" />
     <Project Path="src/Application/Application.csproj" />
+    <Project Path="src/Benchmark/Benchmark.csproj" Id="a2277694-fcce-498e-8881-a93f4ce24f17" />
     <Project Path="src/Contract/Contract.csproj" />
     <Project Path="src/Domain/Domain.csproj" />
     <Project Path="src/Infrastructure/Infrastructure.csproj" />

@@ -25,5 +25,17 @@
 			PrivateAssets="all"
 			Condition="$(MSBuildProjectExtension) == '.csproj'"
 		/>
+		<PackageReference 
+			Include="Serilog" 
+			Version="4.3.1" 
+			PrivateAssets="all"
+			Condition="$(MSBuildProjectExtension) == '.csproj'"
+		/>
+		<PackageReference 
+			Include="Serilog.AspNetCore" 
+			Version="8.0.3" 
+			PrivateAssets="all"
+			Condition="$(MSBuildProjectExtension) == '.csproj'"
+		/>
 	</ItemGroup>
 </Project>

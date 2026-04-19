@@ -30,7 +30,7 @@ public class CreateProductCommandHandler : ICommandHandler<CreateProductCommand>
         var product = Domain.Entities.Product.Create(request.Name, request.Price, request.Description);
         _productRepository.Add(product);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
-        await _cacheService.RemoveCacheResponseAsync("/api/v1/products");
+        await _cacheService.RemoveCacheResponseAsync("/api/v1/Products");
         return Result.Success();
     }
 }

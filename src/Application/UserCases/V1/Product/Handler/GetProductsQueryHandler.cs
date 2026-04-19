@@ -33,20 +33,21 @@ public class GetProductsQueryHandler : IQueryHandler<Query.GetProductsQuery, Lis
     {
         string key = "products_all";
 
-        if( _memCache.TryGetValue(key, out List<Response.ProductResponse>? cached ))
-        {
-            return cached;
-        }
+        await Task.Delay(100, cancellationToken);
+        //if( _memCache.TryGetValue(key, out List<Response.ProductResponse>? cached ))
+        //{
+        //    return cached;
+        //}
 
         var products = _productRepository.FindAll().ToList();
         var result = _mapper.Map<List<Response.ProductResponse>>(products);
-        _memCache.Set(key, result, new MemoryCacheEntryOptions
-        {
-            AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5),
-            SlidingExpiration = TimeSpan.FromMinutes(2)
-            // AbsoluteExpiration: Hết hạn sau 5 phút dù có được dùng hay không
-            // SlidingExpiration: Reset timer nếu được access trong vòng 2 phút
-        });
+        //_memCache.Set(key, result, new MemoryCacheEntryOptions
+        //{
+        //    AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5),
+        //    SlidingExpiration = TimeSpan.FromMinutes(2)
+        //    // AbsoluteExpiration: Hết hạn sau 5 phút dù có được dùng hay không
+        //    // SlidingExpiration: Reset timer nếu được access trong vòng 2 phút
+        //});
         return result;
     }
 

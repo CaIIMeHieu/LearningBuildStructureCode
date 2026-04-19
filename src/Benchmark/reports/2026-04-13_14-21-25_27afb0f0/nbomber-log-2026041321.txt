@@ -1,0 +1,37 @@
+2026-04-13 21:21:25.605 +07:00 [INF] [ThreadId:12] NBomber 6.3.0 started a new session: 2026-04-13_14-21-25_27afb0f0
+2026-04-13 21:21:25.613 +07:00 [INF] [ThreadId:12] NBomber started as single node
+2026-04-13 21:21:25.613 +07:00 [INF] [ThreadId:12] License validation....
+2026-04-13 21:21:25.613 +07:00 [WRN] [ThreadId:12] THIS VERSION IS FREE ONLY FOR PERSONAL USE. You can't use it for an organization.
+2026-04-13 21:21:25.614 +07:00 [INF] [ThreadId:12] Reports folder: C:\coode\LearningBuildStructureCode\src\Benchmark\bin\Release\net8.0\reports\2026-04-13_14-21-25_27afb0f0
+2026-04-13 21:21:25.620 +07:00 [INF] [ThreadId:12] Plugins: no plugins were loaded
+2026-04-13 21:21:25.620 +07:00 [INF] [ThreadId:12] Reporting sinks: no reporting sinks were loaded
+2026-04-13 21:21:25.621 +07:00 [INF] [ThreadId:12] Starting init...
+2026-04-13 21:21:25.621 +07:00 [INF] [ThreadId:12] Target scenarios: Test_GetProducts_Bad_Sync
+2026-04-13 21:21:25.621 +07:00 [INF] [ThreadId:12] Init finished
+2026-04-13 21:21:25.622 +07:00 [INF] [ThreadId:12] Starting bombing...
+2026-04-13 21:21:37.672 +07:00 [ERR] [ThreadId:16] Unhandled exception for Scenario: 0
+System.Net.Http.HttpRequestException: An operation on a socket could not be performed because the system lacked sufficient buffer space or because a queue was full. (localhost:7153)
+ ---> System.Net.Sockets.SocketException (10055): An operation on a socket could not be performed because the system lacked sufficient buffer space or because a queue was full.
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error, CancellationToken cancellationToken)
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16 token)
+   at System.Net.Sockets.Socket.<ConnectAsync>g__WaitForConnectWithCancellation|285_0(AwaitableSocketAsyncEventArgs saea, ValueTask connectTask, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   --- End of inner exception stack trace ---
+   at System.Net.Http.HttpConnectionPool.ConnectToTcpHostAsync(String host, Int32 port, HttpRequestMessage initialRequest, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.ConnectAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.CreateHttp11ConnectionAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.AddHttp11ConnectionAsync(QueueItem queueItem)
+   at System.Threading.Tasks.TaskCompletionSourceWithCancellation`1.WaitWithCancellationAsync(CancellationToken cancellationToken)
+   at System.Net.Http.HttpConnectionPool.SendWithVersionDetectionAndRetryAsync(HttpRequestMessage request, Boolean async, Boolean doRequestAuth, CancellationToken cancellationToken)
+   at System.Net.Http.RedirectHandler.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+   at System.Net.Http.HttpClient.<SendAsync>g__Core|83_0(HttpRequestMessage request, HttpCompletionOption completionOption, CancellationTokenSource cts, Boolean disposeCts, CancellationTokenSource pendingRequestsCts, CancellationToken originalCancellationToken)
+   at NBomber.Http.FSharp.Http.sendWithArgs@267.MoveNext()
+   at Program.<>c__DisplayClass0_0.<<<Main>$>b__1>d.MoveNext() in C:\coode\LearningBuildStructureCode\src\Benchmark\Program.cs:line 27
+--- End of stack trace from previous location ---
+   at NBomber.FSharp.Scenario.typedRun@70-1.MoveNext()
+   at NBomber.Domain.Scheduler.ScenarioActor.clo@72-5.MoveNext()
+2026-04-13 21:21:56.942 +07:00 [INF] [ThreadId:11] Waiting on scenarios completion...
+2026-04-13 21:22:59.346 +07:00 [INF] [ThreadId:324] Stopping scenarios...
+2026-04-13 21:22:59.347 +07:00 [INF] [ThreadId:324] Calculating final statistics...
+2026-04-13 21:22:59.499 +07:00 [INF] [ThreadId:18] Reports saved in folder: C:\coode\LearningBuildStructureCode\src\Benchmark\reports\2026-04-13_14-21-25_27afb0f0
+2026-04-13 21:22:59.499 +07:00 [WRN] [ThreadId:18] THIS VERSION IS FREE ONLY FOR PERSONAL USE. You can't use it for an organization.

@@ -3,15 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Application.DependencyInjection.Options;
 using Application.Interface;
 using Infrastructure.Authentication;
-using Application.DependencyInjection.Options;
 using Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using Polly;
+using Polly.CircuitBreaker;
+using Polly.Retry;
+using Serilog;
 using StackExchange.Redis;
 
 namespace Infrastructure.DependencyInjection.Extensions;
@@ -71,4 +75,51 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<ICacheService, CacheService>();
         return services;
     }
+
+    //public static IServiceCollection AddResilienceConfiguration(
+    //this IServiceCollection services)
+    //{
+    //    // Định nghĩa 1 pipeline dùng chung
+    //    services.AddResiliencePipeline("global-pipeline", builder =>
+    //    {
+    //        // 1. Timeout — mỗi request không quá 10s
+    //        builder.AddTimeout(TimeSpan.FromSeconds(10));
+
+    //        // 2. Retry — thử lại 3 lần với exponential backoff
+    //        builder.AddRetry(new RetryStrategyOptions
+    //        {
+    //            MaxRetryAttempts = 3,
+    //            Delay = TimeSpan.FromSeconds(2),
+    //            BackoffType = DelayBackoffType.Exponential,
+    //            OnRetry = args =>
+    //            {
+    //                Log.Warning("Retry {Attempt} after {Delay}s — {Exception}",
+    //                    args.AttemptNumber,
+    //                    args.RetryDelay.TotalSeconds,
+    //                    args.Outcome.Exception?.Message);
+    //                return ValueTask.CompletedTask;
+    //            }
+    //        });
+
+    //        // 3. Circuit Breaker — 5 fails → open 30s
+    //        builder.AddCircuitBreaker(new CircuitBreakerStrategyOptions
+    //        {
+    //            FailureRatio = 0.5,           // 50% request fail → open
+    //            MinimumThroughput = 5,        // Cần ít nhất 5 request để tính
+    //            BreakDuration = TimeSpan.FromSeconds(30),
+    //            OnOpened = args =>
+    //            {
+    //                Log.Warning("Circuit OPEN — {Exception}", args.Outcome.Exception?.Message);
+    //                return ValueTask.CompletedTask;
+    //            },
+    //            OnClosed = args =>
+    //            {
+    //                Log.Information("Circuit CLOSED — service recovered");
+    //                return ValueTask.CompletedTask;
+    //            }
+    //        });
+    //    });
+
+    //    return services;
+    //}
 }

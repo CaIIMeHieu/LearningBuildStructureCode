@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Persistance.DBContext;
 using Persistance.DependencyInjection.Extentions;
 using Persistance.DependencyInjection.Options;
+using Polly;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -32,6 +33,7 @@ builder.Services.AddSqlServerConfiguration();
 builder.Services.ConfigureSqlServerRetryOptions(builder.Configuration.GetSection(nameof(SqlServerRetryOptions)));
 builder.Services.AddConfigurationAutoMapper();
 builder.Services.AddRepositoryBaseConfiguration();
+builder.Services.AddRedisConfiguration(builder.Configuration);
 
 builder.Services.AddIdentity<AppUser, IdentityRole<Guid>>(options =>
 {
@@ -45,6 +47,22 @@ builder.Services.AddIdentity<AppUser, IdentityRole<Guid>>(options =>
 
 builder.Services.AddJwtAuthentication(builder.Configuration);
 builder.Services.AddMemoryCache();
+
+builder.Services.ConfigureHttpClientDefaults(http =>
+{
+    http.AddStandardResilienceHandler(options =>
+    {
+        options.Retry.MaxRetryAttempts = 3;
+        options.Retry.Delay = TimeSpan.FromSeconds(2);
+        options.Retry.BackoffType = DelayBackoffType.Exponential;
+
+        options.CircuitBreaker.FailureRatio = 0.5;
+        options.CircuitBreaker.MinimumThroughput = 5;
+        options.CircuitBreaker.BreakDuration = TimeSpan.FromSeconds(30);
+
+        options.AttemptTimeout.Timeout = TimeSpan.FromSeconds(10);
+    });
+});
 
 var app = builder.Build();
 

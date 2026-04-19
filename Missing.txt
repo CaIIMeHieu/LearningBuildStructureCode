@@ -2,11 +2,44 @@ Khi nào dùng List, khi nao dùng IEnumerable, khi nào dùng Collection
 
 Typeof
 
-Các chính sách xử lý lỗi tăng cường khả năng chống chịu cho server :
+Các chính sách xử lý lỗi tăng cường khả năng chống chịu cho server ( áp dụng cho trường hợp gọi api ra ngoài ) :
 	1. Retry Policy (Chính sách thử lại): Khi một lỗi tạm thời xảy ra, server sẽ tự động thử lại yêu cầu sau một khoảng thời gian tăng dần
 	   Điều này giúp giảm thiểu tác động của các lỗi tạm thời như mất kết nối mạng hoặc quá tải.
 	2. Ngắt mạch xử lý đến một dịch vụ khi nó gặp lỗi liên tục
 	3. Giới hạn số lượng request đồng thời
 	4. Giới hạn timeout cho các request
 	5. Cung cấp giá trị dự phòng khi một dịch vụ không khả dụng
+
+
+AbsoluteExpiration vs SlidingExpiration
+AbsoluteExpiration là chỉ định sau khoảng thời gian đó mặc dù user đang tương tác cũng sẽ force hết hạn, sử dụng với ứng dụng có tính bảo mật cao
+SlidingExpiration là chỉ định khoảng thời gian user vẫn tương tác thì sẽ gia hạn token
+
+Phân biệt filter và middleware trong ASP.NET Core
+
+Loading Strategies trong EF Core
+	Giả sử Customer có nhiều Order
+
+	public class Customer
+    {
+        public Guid Id { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public List<Order> Orders { get; set; } = []; // Navigation property
+    }
+
+    Load data liên quan : 
+        1.Eager Loading ( Lấy tất cả cùng một lúc, ef core sẽ gửi xuống db câu lệnh join ( dùng khi chắn chắn dùng đến dữ liệu và dữ liệu liên quan ) )
+          var customers = await _dbContext.Customers
+            .Include(c => c.Orders)  // Load Orders ngay lập tức
+            .ToListAsync();
+        2.Eplixit Loading ( Lấy từng phần, ef core sẽ gửi xuống db nhiều câu lệnh select ( dùng khi load dữ liệu và có thể hoặc không load dữ liệu liên quan )  )
+          var customer = await _dbContext.Customers.FindAsync(id);
+          await _dbContext.Entry(customer)
+          .Collection(c => c.Orders)
+          .LoadAsync();
+
+Single vs Split Query
+    Khi Include nhiều collection, EF Core mặc định dùng Single Query với JOIN
+
+    
 
