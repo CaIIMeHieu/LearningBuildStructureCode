@@ -10,9 +10,9 @@ using Contract.Abstractions.Shared;
 using Domain.Abstractions;
 using static Application.UserCases.V1.Product.Response;
 
-namespace Application.UserCases.V1.Product.Handler;
+namespace Application.UserCases.V1.Product.Handler.Query;
 
-public class GetProductByIdQueryHandler : IQueryHandler<Query.GetProductByIdQuery, ProductResponse>
+public class GetProductByIdQueryHandler : IQueryHandler<QuerySource.GetProductByIdQuery, ProductResponse>
 {
     private readonly IRepositoryBase<Domain.Entities.Product, Guid> _productRepository;
     private readonly IMapper _mapper;
@@ -22,7 +22,7 @@ public class GetProductByIdQueryHandler : IQueryHandler<Query.GetProductByIdQuer
         _productRepository = productRepository;
         _mapper = mapper;
     }
-    public async Task<Result<ProductResponse>> Handle(Query.GetProductByIdQuery request, CancellationToken cancellationToken)
+    public async Task<Result<ProductResponse>> Handle(QuerySource.GetProductByIdQuery request, CancellationToken cancellationToken)
     {
         var product = await _productRepository.FindByIdAsync(request.Id, cancellationToken);
         var result = _mapper.Map<ProductResponse>(product);

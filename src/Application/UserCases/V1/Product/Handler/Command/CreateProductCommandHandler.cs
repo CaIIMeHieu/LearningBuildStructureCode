@@ -8,9 +8,9 @@ using Application.Interface;
 using Contract.Abstractions.Message;
 using Contract.Abstractions.Shared;
 using Domain.Abstractions;
-using static Application.UserCases.V1.Product.Command;
+using static Application.UserCases.V1.Product.CommandSource;
 
-namespace Application.UserCases.V1.Product.Handler;
+namespace Application.UserCases.V1.Product.Handler.Command;
 
 public class CreateProductCommandHandler : ICommandHandler<CreateProductCommand>
 {

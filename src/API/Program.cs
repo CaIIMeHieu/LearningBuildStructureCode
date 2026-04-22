@@ -1,4 +1,5 @@
 using Application.DependencyInjection.Extentions;
+using Application.Middlewares;
 using Domain.Entities;
 using Infrastructure.DependencyInjection.Extensions;
 using Microsoft.AspNetCore.Identity;
@@ -34,6 +35,7 @@ builder.Services.ConfigureSqlServerRetryOptions(builder.Configuration.GetSection
 builder.Services.AddConfigurationAutoMapper();
 builder.Services.AddRepositoryBaseConfiguration();
 builder.Services.AddRedisConfiguration(builder.Configuration);
+builder.Services.AddTransient<ExceptionHandlingMiddleware>();
 
 builder.Services.AddIdentity<AppUser, IdentityRole<Guid>>(options =>
 {
@@ -66,6 +68,8 @@ builder.Services.ConfigureHttpClientDefaults(http =>
 
 var app = builder.Build();
 
+app.UseMiddleware<ExceptionHandlingMiddleware>();
+
 using ( var scope = app.Services.CreateScope() )
 {
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
@@ -76,7 +80,11 @@ using ( var scope = app.Services.CreateScope() )
             await roleManager.CreateAsync(new IdentityRole<Guid>(role));
         }
     }    
-}    
+}
+
+// trường hợp không cấu hình handle global exception middleware thì app sẽ trả về 500
+// kèm rất nhiều thông tin chi tiết về lỗi ( stack trace )
+
 
 if (app.Environment.IsDevelopment())
 {

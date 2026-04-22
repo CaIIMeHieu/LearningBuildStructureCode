@@ -1,0 +1,25 @@
+Observer Pattern
+	Mục đích: Định nghĩa mối quan hệ phụ thuộc một-nhiều giữa các đối tượng để khi một đối tượng thay đổi trạng thái,
+		tất cả các đối tượng phụ thuộc được thông báo.
+	Ví dụ thực tế: Hệ thống sự kiện (event), hệ thống thông báo (notification).
+
+
+
+publisher là đối tượng phát event khi có sự kiện hay hành vi nào đó xảy ra 
+subscriber là đối tượng đăng ký để nhận thông báo khi có sự kiện xảy ra
+
+flow :
+	1. Publisher phát ra một sự kiện (event).
+	2. Các subscriber đã đăng ký sẽ nhận được thông báo về sự kiện đó.
+
+Sự khác nhau giữa Event và Command,Query trong MediatR là :
+	Event : có thể có nhiều handler xử lý cùng một event và không trả về kết quả
+	Command,Query : chỉ có một handler xử lý và trả về kết quả
+
+trong file kiến thức của tôi có ConvertDomainEventsToOutboxMessagesInterceptor nhưng project của tôi bị miss file đó
+
+Tôi đã đọc các method liên quan trong AggregateRoot và Product. là khi product được tạo sẽ 
+raise một event ProductCreatedEvent
+và List<IDomain> _domainEvents sẽ được thêm vào
+
+

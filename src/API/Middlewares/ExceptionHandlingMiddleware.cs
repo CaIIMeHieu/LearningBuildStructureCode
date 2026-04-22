@@ -20,6 +20,7 @@ internal sealed class ExceptionHandlingMiddleware : IMiddleware
     {
         try
         {
+            //next là một delegate đại diện cho phần sau xử lý request (middleware tiếp theo → controller → handler → db...)            
             await next(context);
         }
         catch (Exception e)

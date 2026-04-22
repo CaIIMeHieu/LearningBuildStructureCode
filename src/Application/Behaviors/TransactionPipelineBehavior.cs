@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Transactions;
 using Application.Abstractions;
+using Contract.Abstractions.Message;
+using Domain.Abstractions.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Persistance.DBContext;
@@ -16,11 +18,13 @@ where TRequest : notnull
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly ApplicationDbContext _context;
+    private readonly IPublisher _publisher;
 
-    public TransactionPipelineBehavior(IUnitOfWork unitOfWork, ApplicationDbContext context)
+    public TransactionPipelineBehavior(IUnitOfWork unitOfWork, ApplicationDbContext context, IPublisher publisher)
     {
         _unitOfWork = unitOfWork;
         _context = context;
+        _publisher = publisher;
     }
 
     public async Task<TResponse> Handle(TRequest request,
@@ -54,6 +58,19 @@ where TRequest : notnull
             var response = await next();
             await _unitOfWork.SaveChangesAsync(cancellationToken);
             transaction.Complete();
+            // dispatch event here            
+            var aggregateRoots = _context.ChangeTracker.Entries()
+                .Select(e => e.Entity)
+                .OfType<AggregateRoot>()
+                .ToList();
+            var domainEvents = aggregateRoots
+                .SelectMany(e => e.DomainEvents)
+                .ToList();
+            foreach (var domainEvent in domainEvents)
+            {
+                await _publisher.Publish(domainEvent, cancellationToken);
+            }
+            aggregateRoots.ForEach(e => e.ClearDomainEvent());
             await _unitOfWork.DisposeAsync();
             return response;
         }
@@ -62,5 +79,5 @@ where TRequest : notnull
     }
 
     private bool IsCommand()
-        => typeof(TRequest).Name.EndsWith("Command");
+        => typeof(ICommand).IsAssignableFrom(typeof(TRequest));
 }

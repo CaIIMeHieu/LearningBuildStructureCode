@@ -8,7 +8,7 @@ using FluentValidation;
 
 namespace Application.UserCases.V1.Product.Validator;
 
-public class CreateProductValidator : AbstractValidator<Command.CreateProductCommand>
+public class CreateProductValidator : AbstractValidator<CommandSource.CreateProductCommand>
 {
     public CreateProductValidator()
     {

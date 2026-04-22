@@ -24,7 +24,7 @@ public class AggregateRoot : DomainEntity<Guid>
         _domainEvents.Add(domainEvent);
     }
 
-    protected void ClearDomainEvent()
+    public void ClearDomainEvent()
     {
         _domainEvents.Clear();
     }

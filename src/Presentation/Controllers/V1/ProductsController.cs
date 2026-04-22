@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Presentation.Abstract;
-using static Application.UserCases.V1.Product.Query;
+using static Application.UserCases.V1.Product.QuerySource;
 
 
 namespace Presentation.Controllers.V1;
@@ -32,7 +32,7 @@ public class ProductsController : ApiController
     //[Cache(1000)]
     public async Task<IActionResult> GetProductsGood()
     {
-        var result = await Sender.Send(new Query.GetProductsQuery());
+        var result = await Sender.Send(new QuerySource.GetProductsQuery());
         if( result.IsSuccess )
         {
             return Ok(result);
@@ -47,7 +47,7 @@ public class ProductsController : ApiController
     {
         // TỒI: Chặn đứng luồng hiện tại cho đến khi có kết quả. 
         // Hệ thống mất đi 1 luồng xử lý trong thời gian chờ.
-        var result = Sender.Send(new Query.GetProductsQuery()).GetAwaiter().GetResult();
+        var result = Sender.Send(new QuerySource.GetProductsQuery()).GetAwaiter().GetResult();
 
         if (result.IsSuccess)
         {
@@ -74,7 +74,7 @@ public class ProductsController : ApiController
     [HttpPost]
     [ProducesResponseType(typeof(Result), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> CreateProduct([FromBody] Command.CreateProductCommand createProductCommand )
+    public async Task<IActionResult> CreateProduct([FromBody] CommandSource.CreateProductCommand createProductCommand )
     { 
         var result = await Sender.Send(createProductCommand);
         return Ok(result);

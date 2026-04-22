@@ -13,9 +13,9 @@ using Domain.Abstractions;
 using MediatR;
 using Microsoft.Extensions.Caching.Memory;
 
-namespace Application.UserCases.V1.Product.Handler;
+namespace Application.UserCases.V1.Product.Handler.Query;
 
-public class GetProductsQueryHandler : IQueryHandler<Query.GetProductsQuery, List<Response.ProductResponse>>
+public class GetProductsQueryHandler : IQueryHandler<QuerySource.GetProductsQuery, List<Response.ProductResponse>>
 {
     private readonly IRepositoryBase<Domain.Entities.Product, Guid> _productRepository;
     private readonly IMapper _mapper;
@@ -29,7 +29,7 @@ public class GetProductsQueryHandler : IQueryHandler<Query.GetProductsQuery, Lis
     }
 
     //mem cache
-    public async Task<Result<List<Response.ProductResponse>>> Handle(Query.GetProductsQuery request, CancellationToken cancellationToken)
+    public async Task<Result<List<Response.ProductResponse>>> Handle(QuerySource.GetProductsQuery request, CancellationToken cancellationToken)
     {
         string key = "products_all";
 

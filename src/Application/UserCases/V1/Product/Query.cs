@@ -8,7 +8,7 @@ using static Application.UserCases.V1.Product.Response;
 
 namespace Application.UserCases.V1.Product;
 
-public static class Query
+public static class QuerySource
 {
     public record GetProductByIdQuery(Guid Id) : IQuery<ProductResponse>;
     public record GetProductsQuery() : IQuery<List<ProductResponse>>;
