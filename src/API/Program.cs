@@ -57,7 +57,7 @@ builder.Services.ConfigureHttpClientDefaults(http =>
         options.Retry.MaxRetryAttempts = 3;
         options.Retry.Delay = TimeSpan.FromSeconds(2);
         options.Retry.BackoffType = DelayBackoffType.Exponential;
-
+         
         options.CircuitBreaker.FailureRatio = 0.5;
         options.CircuitBreaker.MinimumThroughput = 5;
         options.CircuitBreaker.BreakDuration = TimeSpan.FromSeconds(30);
