@@ -50,14 +50,22 @@ internal sealed class ExceptionHandlingMiddleware : IMiddleware
         await httpContext.Response.WriteAsync(JsonSerializer.Serialize(response));
     }
 
+    // Code cũ vi phạm nguyên tắc Open/Closed, khi muốn thêm exception mới thì phải sửa code ở đây
+    //private static int GetStatusCode(Exception exception) =>
+    //    exception switch
+    //    {
+    //        BadRequestException => StatusCodes.Status400BadRequest,
+    //        NotFoundException => StatusCodes.Status404NotFound,
+    //        //Application.Exceptions.ValidationException => StatusCodes.Status422UnprocessableEntity,
+    //        FluentValidation.ValidationException => StatusCodes.Status400BadRequest,
+    //        FormatException => StatusCodes.Status422UnprocessableEntity,
+    //        _ => StatusCodes.Status500InternalServerError
+    //    };
+
     private static int GetStatusCode(Exception exception) =>
         exception switch
         {
-            BadRequestException => StatusCodes.Status400BadRequest,
-            NotFoundException => StatusCodes.Status404NotFound,
-            //Application.Exceptions.ValidationException => StatusCodes.Status422UnprocessableEntity,
-            FluentValidation.ValidationException => StatusCodes.Status400BadRequest,
-            FormatException => StatusCodes.Status422UnprocessableEntity,
+            DomainException domainException => domainException.StatusCode,
             _ => StatusCodes.Status500InternalServerError
         };
 

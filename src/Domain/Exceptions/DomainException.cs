@@ -7,4 +7,5 @@ public abstract class DomainException : Exception
         Title = title;
 
     public string Title { get; }
+    public abstract int StatusCode { get; }
 }

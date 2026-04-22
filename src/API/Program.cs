@@ -68,7 +68,6 @@ builder.Services.ConfigureHttpClientDefaults(http =>
 
 var app = builder.Build();
 
-app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 using ( var scope = app.Services.CreateScope() )
 {
@@ -85,7 +84,7 @@ using ( var scope = app.Services.CreateScope() )
 // trường hợp không cấu hình handle global exception middleware thì app sẽ trả về 500
 // kèm rất nhiều thông tin chi tiết về lỗi ( stack trace )
 
-
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
