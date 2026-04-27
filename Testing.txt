@@ -1,0 +1,5 @@
+Unit test phù hợp khi class có 3 đặc điểm:
+	Logic rõ ràng — có input, có output, có rule
+	Không phụ thuộc external — không DB, không HTTP, không file system
+	Isolated — chạy được một mình, không cần cả ứng dụng
+

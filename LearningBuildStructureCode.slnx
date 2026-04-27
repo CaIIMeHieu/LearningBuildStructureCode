@@ -2,6 +2,7 @@
   <Folder Name="/docs/">
     <File Path="C#.txt" />
     <File Path="Patterns.txt" />
+    <File Path="Testing.txt" />
     <File Path="UseCase.txt" />
   </Folder>
   <Folder Name="/Solution Items/">
