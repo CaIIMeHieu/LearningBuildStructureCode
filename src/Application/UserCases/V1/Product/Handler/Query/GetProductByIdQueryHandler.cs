@@ -8,6 +8,7 @@ using AutoMapper;
 using Contract.Abstractions.Message;
 using Contract.Abstractions.Shared;
 using Domain.Abstractions;
+using Domain.Exceptions;
 using static Application.UserCases.V1.Product.Response;
 
 namespace Application.UserCases.V1.Product.Handler.Query;
@@ -25,7 +26,12 @@ public class GetProductByIdQueryHandler : IQueryHandler<QuerySource.GetProductBy
     public async Task<Result<ProductResponse>> Handle(QuerySource.GetProductByIdQuery request, CancellationToken cancellationToken)
     {
         var product = await _productRepository.FindByIdAsync(request.Id, cancellationToken);
+        if (product == null)
+        {
+            //throw new NotFoundException("The specified product was not found.");
+            return Result.Failure<ProductResponse>(Error.NotFound("NotFound", "The specified product was not found."));
+        }
         var result = _mapper.Map<ProductResponse>(product);
-        return result;
+        return Result.Success(result);
     }
 }

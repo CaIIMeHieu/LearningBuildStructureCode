@@ -20,4 +20,8 @@
     <Project Path="src/Persistance/Persistance.csproj" />
     <Project Path="src/Presentation/Presentation.csproj" />
   </Folder>
+  <Folder Name="/test/">
+    <Project Path="test/Test.Integration/Test.Integration.csproj" Id="69a8ed04-c187-4579-930d-b1e84d5388cc" />
+    <Project Path="test/Test.Unit/Test.Unit.csproj" Id="fcc744a2-2718-4452-9d61-d114f604627d" />
+  </Folder>
 </Solution>

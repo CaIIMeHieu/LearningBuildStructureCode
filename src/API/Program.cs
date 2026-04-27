@@ -69,17 +69,17 @@ builder.Services.ConfigureHttpClientDefaults(http =>
 var app = builder.Build();
 
 
-using ( var scope = app.Services.CreateScope() )
-{
-    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
-    foreach( var role in new[] {"Admin","User"} )
-    {
-        if( !await roleManager.RoleExistsAsync(role) )
-        {
-            await roleManager.CreateAsync(new IdentityRole<Guid>(role));
-        }
-    }    
-}
+//using ( var scope = app.Services.CreateScope() )
+//{
+//    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
+//    foreach( var role in new[] {"Admin","User"} )
+//    {
+//        if( !await roleManager.RoleExistsAsync(role) )
+//        {
+//            await roleManager.CreateAsync(new IdentityRole<Guid>(role));
+//        }
+//    }    
+//}
 
 // trường hợp không cấu hình handle global exception middleware thì app sẽ trả về 500
 // kèm rất nhiều thông tin chi tiết về lỗi ( stack trace )
@@ -97,3 +97,5 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+public partial class Program { }

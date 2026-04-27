@@ -29,6 +29,8 @@ public abstract class ApiController : ControllerBase
                         "Validation Error", StatusCodes.Status400BadRequest,
                         result.Error,
                         validationResult.Errors)),
+            { Error.ErrorType: ErrorTypeEnum.NotFound } => NotFound(CreateProblemDetails("Not Found", StatusCodes.Status404NotFound, result.Error)),
+            { Error.ErrorType : ErrorTypeEnum.Conflict } => Conflict(CreateProblemDetails("Conflict", StatusCodes.Status409Conflict, result.Error)),
             _ => BadRequest(CreateProblemDetails("Bad Request", StatusCodes.Status400BadRequest, result.Error))
         };
 

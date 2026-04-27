@@ -3,3 +3,5 @@ Unit test phù hợp khi class có 3 đặc điểm:
 	Không phụ thuộc external — không DB, không HTTP, không file system
 	Isolated — chạy được một mình, không cần cả ứng dụng
 
+Unit test : test một class duy nhất
+Integration test: test nhiều layer phối hợp với nhau
