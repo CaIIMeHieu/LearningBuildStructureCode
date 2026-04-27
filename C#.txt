@@ -5,3 +5,11 @@
 	Singleton : Tạo mới một instance duy nhất cho toàn bộ ứng dụng, tất cả các request sẽ dùng chung instance này
 
 Convention mặc định của Exeception handler là Transition
+
+vitual dispatch : 
+là một cơ chế trong lập trình hướng đối tượng cho phép gọi phương thức của một đối tượng 
+thông qua một tham chiếu đến lớp cha của nó. Khi một phương thức được gọi thông qua một tham chiếu đến lớp cha,
+hệ thống sẽ xác định loại thực tế của đối tượng tại thời điểm chạy và gọi phương thức tương ứng của lớp con
+nếu nó đã được ghi đè (override) trong lớp con đó. Điều này cho phép các lớp con có thể cung cấp các triển khai
+khác nhau cho cùng một phương thức được định nghĩa trong lớp cha, tạo ra sự linh hoạt và khả năng mở rộng
+trong thiết kế phần mềm. 

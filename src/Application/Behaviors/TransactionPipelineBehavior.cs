@@ -57,7 +57,6 @@ where TRequest : notnull
         {            
             var response = await next();
             await _unitOfWork.SaveChangesAsync(cancellationToken);
-            transaction.Complete();
             // dispatch event here            
             var aggregateRoots = _context.ChangeTracker.Entries()
                 .Select(e => e.Entity)
@@ -71,7 +70,7 @@ where TRequest : notnull
                 await _publisher.Publish(domainEvent, cancellationToken);
             }
             aggregateRoots.ForEach(e => e.ClearDomainEvent());
-            await _unitOfWork.DisposeAsync();
+            transaction.Complete();            
             return response;
         }
         #endregion ============== SQL-SERVER-STRATEGY-2 ==============

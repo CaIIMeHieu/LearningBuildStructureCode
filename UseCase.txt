@@ -1,0 +1,15 @@
+-------------------Dispatch Event-------------------
+- Thực hiện dispatch event ở pipeline transaction của MediatR ( tối ưu việc sau mỗi handler lại gọi dispatch, chúng ta gọi dispatch ở một chỗ )
+- Có 2 options khi gọi dispatch event :
+	1. Dispatch trước transaction.Complete() : nếu có lỗi xảy ra trong transaction thì event sẽ không được dispatch
+	2. Lưu cả event vào database ( outbox pattern ) và dispatch sau khi transaction.Complete() : nếu có lỗi xảy ra trong transaction thì event vẫn được lưu vào database và sẽ được dispatch sau với worker
+
+- Trade off :
+	1. Đơn giản hơn, không phải lưu database, nhưng do việc thực hiện dispatch cùng với lưu db nên sẽ giam connection db cho đến khi transaction hoàn thành
+	   nếu có những handler như là Email handler thì sẽ làm chậm transaction ( đã implement )
+	2. Phức tạp hơn, phải lưu database, nhưng sẽ không giam connection db cho đến khi transaction hoàn thành
+	   , có thể xử lý retry nếu có lỗi xảy ra trong quá trình dispatch event ( chưa implement )
+
+
+
+
