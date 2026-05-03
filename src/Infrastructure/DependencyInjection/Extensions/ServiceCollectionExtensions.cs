@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Application.DependencyInjection.Options;
 using Application.Interface;
 using Infrastructure.Authentication;
+using Infrastructure.DependencyInjection.Options;
 using Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
@@ -33,7 +34,7 @@ public static class ServiceCollectionExtensions
         services.Configure<JwtSettings>(
             configuration.GetSection(nameof(JwtSettings)));
 
-        services.AddSingleton<IJwtTokenService, JwtTokenService>();
+        services.AddScoped<IJwtTokenService, JwtTokenService>();
 
         services
             .AddAuthentication(options =>
@@ -57,6 +58,20 @@ public static class ServiceCollectionExtensions
                 };
             });
 
+        return services;
+    }
+
+    public static IServiceCollection AddGoogleAuthentication(
+    this IServiceCollection services,
+    IConfiguration configuration)
+    {
+        var googleOptions = configuration.GetSection("Authentication:Google").Get<GoogleOptions>()
+                            ?? throw new InvalidOperationException("Google OAuth config is missing.");
+        services.AddAuthentication().AddGoogle( options =>
+        {
+            options.ClientId = googleOptions.ClientId;
+            options.ClientSecret = googleOptions.ClientSecret;
+        });
         return services;
     }
 

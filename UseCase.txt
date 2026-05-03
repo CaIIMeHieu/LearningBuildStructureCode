@@ -27,3 +27,13 @@ token được chia làm 3 phần header, payload, signature
 Nếu attacker sửa payload thì khi server có secretkey kí lại token sẽ không khớp với signature, server sẽ phát hiện token đã bị sửa và từ chối yêu cầu
 
 
+-----------------OAuth2 Authorization Code Flow---------------------
+Click Login with Google -> Redirect tới trang đăng nhập Google -> Google redirect về redirectURI của application với authorization code 
+-> Application gửi authorization code và client secret tới Google để lấy access token và refresh token ( đảm bảo an toàn vì cơ chế mã hóa nội dung truyền tải của https )
+-> Application sử dụng access token để tạo/tìm user trong db 
+-----------------Setup Google OAuth credential----------------------
+Vào console.cloud.google.com
+Tạo project mới (hoặc dùng project có sẵn)
+APIs & Services → Credentials → Create OAuth 2.0 Client ID
+Application type: Web application
+Authorized redirect URIs: 7153https://localhost:7xxx/signin-google (port của project bạn)

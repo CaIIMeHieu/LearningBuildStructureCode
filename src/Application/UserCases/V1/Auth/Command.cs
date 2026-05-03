@@ -17,4 +17,5 @@ public class CommandSource
     public record RegisterCommand(string FullName, string Email, string Password, string DeviceId) : ICommand<LoginResponse>;
     public record RevolkRefreshTokenCommand(Guid userId, string refreshToken, string deviceId) : ICommand<bool>;
     public record RenewAccessTokenCommand(string refreshToken, string deviceId) : ICommand<LoginResponse>;
+    public record GoogleLoginCommand(string email, string deviceId, string googleId) : ICommand<LoginResponse>;
 }

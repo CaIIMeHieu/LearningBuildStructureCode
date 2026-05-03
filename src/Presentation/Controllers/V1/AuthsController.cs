@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using Asp.Versioning;
 using MediatR;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Mvc;
 using Presentation.Abstract;
 
@@ -60,5 +63,41 @@ public class AuthsController: ApiController
             return Ok(result);
         }
         return HandlerFailure(result);
+    }
+
+    // Điều hướng đến popup login của google
+    [HttpGet("login-google")]
+    public IActionResult LoginGoogle([FromQuery] string deviceId)
+    {
+        var properties = new AuthenticationProperties
+        {
+            RedirectUri = Url.Action("GoogleCallback"),
+            Items = { ["deviceId"] = deviceId } // framework tự encode vào state
+        };
+        return Challenge(properties, GoogleDefaults.AuthenticationScheme);
+    }
+
+    // Bước google đã trả về token cho clientid
+    [HttpGet("google-callback")]
+    public async Task<IActionResult> GoogleCallback()
+    {
+        var result = await HttpContext.AuthenticateAsync(GoogleDefaults.AuthenticationScheme);
+        var deviceId = result.Properties.Items["deviceId"]; // lấy từ state gửi lên và được nhận về
+
+        if (!result.Succeeded)
+            return Unauthorized();
+
+        var email = result.Principal.FindFirstValue(ClaimTypes.Email);
+        //var name = result.Principal.FindFirstValue(ClaimTypes.Name);
+        var googleId = result.Principal.FindFirstValue(ClaimTypes.NameIdentifier);
+        
+        var command = new Application.UserCases.V1.Auth.CommandSource.GoogleLoginCommand(email, deviceId, googleId);
+        var commandResult = await Sender.Send(command);
+
+        if( commandResult.IsSuccess )
+        {
+            return Ok(commandResult);
+        }
+        return HandlerFailure(commandResult);
     }
 }

@@ -42,25 +42,8 @@ public class LoginHandler : ICommandHandler<LoginCommand, LoginResponse>
             return Result.Failure<LoginResponse>(
                 new Error("Auth.Login", "Invalid email or password."));
 
-        // 3. Lấy roles
-        var roles = await _userManager.GetRolesAsync(user);
-
-        // 4. Generate tokens
-        var accessToken = _jwtService.GenerateAccessToken(user, roles);
-        var exitsValidRefreshToken = await _refreshTokenRepository.FindSingleAsync( token => token.UserId == user.Id && token.DeviceId == command.DeviceId && token.ExpireAt > DateTime.UtcNow);
-        var refreshTokenString = "";
-        // 5. Lưu Refresh Token
-        if( exitsValidRefreshToken != null )
-        {            
-            refreshTokenString = exitsValidRefreshToken.Token;
-        }
-        else
-        {
-           refreshTokenString = RefreshToken.GenerateRefreshToken();
-           var refreshToken = RefreshToken.Create(user.Id, command.DeviceId, refreshTokenString, DateTime.UtcNow.AddDays(7));
-           _refreshTokenRepository.Add(refreshToken);
-        }
-
+        var (accessToken, refreshTokenString) = await _jwtService.IssueTokenAsync(user, command.DeviceId, ct);
+ 
         return Result.Success(new LoginResponse(accessToken, refreshTokenString));
     }
 

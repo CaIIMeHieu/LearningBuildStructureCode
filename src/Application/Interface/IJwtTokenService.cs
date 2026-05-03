@@ -10,4 +10,5 @@ namespace Infrastructure.Authentication;
 public interface IJwtTokenService
 {
     string GenerateAccessToken(AppUser user, IList<string> roles);
+    Task<(string accessToken, string refreshToken)> IssueTokenAsync(AppUser user, string deviceId, CancellationToken ct);
 }

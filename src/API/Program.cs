@@ -48,6 +48,7 @@ builder.Services.AddIdentity<AppUser, IdentityRole<Guid>>(options =>
     .AddDefaultTokenProviders();
 
 builder.Services.AddJwtAuthentication(builder.Configuration);
+builder.Services.AddGoogleAuthentication(builder.Configuration);
 builder.Services.AddMemoryCache();
 
 builder.Services.ConfigureHttpClientDefaults(http =>
