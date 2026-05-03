@@ -11,5 +11,19 @@
 	   , có thể xử lý retry nếu có lỗi xảy ra trong quá trình dispatch event ( chưa implement )
 
 
+------------------Rotate Refresh Token-----------------------
+- Khi một người dùng ở một thiết bị sử dụng refresh token để lấy access token mới, chúng ta sẽ tạo một refresh token mới và vô hiệu hóa refresh token cũ
+- Điều này giúp tăng cường bảo mật bằng cách giảm nguy cơ bị lạm dụng refresh token nếu nó bị đánh cắp
+Ví dụ : attacker đánh cắp được refresh token của user, nếu attacker sử dụng refresh token đó để lấy refreshtoken thì khi người dùng gọi refreshToken sẽ bị force logout
+Attacker dùng abc123 → server revoke abc123, issue xyz789
+User A dùng abc123 → fail vì đã bị revoke → biết ngay token bị đánh cắp → force logout
+
+
+-----------------JWT đảm bảo tính nhất quán của dữ liệu-------------
+token được chia làm 3 phần header, payload, signature
+- Header : chứa thông tin về thuật toán mã hóa
+- Payload : chứa thông tin về user và các claim
+- Signature : được tạo ra bằng cách mã hóa header và payload bằng một secret key, giúp đảm bảo tính toàn vẹn của token
+Nếu attacker sửa payload thì khi server có secretkey kí lại token sẽ không khớp với signature, server sẽ phát hiện token đã bị sửa và từ chối yêu cầu
 
 

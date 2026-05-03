@@ -9,6 +9,8 @@
 
   <ItemGroup>
     <Folder Include="Abstractions\" />
+    <Folder Include="UserCases\V1\Auth\Handler\Event\" />
+    <Folder Include="UserCases\V1\Auth\Handler\Query\" />
   </ItemGroup>
 
   <ItemGroup>

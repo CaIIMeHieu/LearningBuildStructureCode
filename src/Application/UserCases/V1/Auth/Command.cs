@@ -9,10 +9,12 @@ using static Application.UserCases.V1.Auth.Response;
 
 namespace Application.UserCases.V1.Auth;
 
-public class Command
+public class CommandSource
 {
-    public record LoginCommand(string Email, string Password)
+    public record LoginCommand(string Email, string Password, string DeviceId)
     : ICommand<LoginResponse>;
 
-    public record RegisterCommand(string FullName, string Email, string Password) : ICommand<LoginResponse>;
+    public record RegisterCommand(string FullName, string Email, string Password, string DeviceId) : ICommand<LoginResponse>;
+    public record RevolkRefreshTokenCommand(Guid userId, string refreshToken, string deviceId) : ICommand<bool>;
+    public record RenewAccessTokenCommand(string refreshToken, string deviceId) : ICommand<LoginResponse>;
 }

@@ -5,10 +5,11 @@ using System.Text;
 using System.Threading.Tasks;
 using Contract.Abstractions.Message;
 using Contract.Abstractions.Shared;
+using Domain.Abstractions;
 using Domain.Entities;
 using Infrastructure.Authentication;
 using Microsoft.AspNetCore.Identity;
-using static Application.UserCases.V1.Auth.Command;
+using static Application.UserCases.V1.Auth.CommandSource;
 using static Application.UserCases.V1.Auth.Response;
 
 namespace Application.UserCases.V1.Auth.Handler;
@@ -17,11 +18,13 @@ public class LoginHandler : ICommandHandler<LoginCommand, LoginResponse>
 {
     private readonly UserManager<AppUser> _userManager;
     private readonly IJwtTokenService _jwtService;
+    private readonly IRepositoryBase<RefreshToken, Guid> _refreshTokenRepository; 
 
-    public LoginHandler(UserManager<AppUser> userManager, IJwtTokenService jwtService)
+    public LoginHandler(UserManager<AppUser> userManager, IJwtTokenService jwtService, IRepositoryBase<RefreshToken, Guid> refreshTokenRepository )
     {
         _userManager = userManager;
         _jwtService = jwtService;
+        _refreshTokenRepository = refreshTokenRepository;
     }
 
     public async Task<Result<LoginResponse>> Handle(
@@ -44,14 +47,25 @@ public class LoginHandler : ICommandHandler<LoginCommand, LoginResponse>
 
         // 4. Generate tokens
         var accessToken = _jwtService.GenerateAccessToken(user, roles);
-        var refreshToken = _jwtService.GenerateRefreshToken();
-
+        var exitsValidRefreshToken = await _refreshTokenRepository.FindSingleAsync( token => token.UserId == user.Id && token.DeviceId == command.DeviceId && token.ExpireAt > DateTime.UtcNow);
+        var refreshTokenString = "";
         // 5. Lưu Refresh Token
-        user.RefreshToken = refreshToken;
-        user.RefreshTokenExpiry = DateTime.UtcNow
-            .AddDays(7);
-        await _userManager.UpdateAsync(user);
+        if( exitsValidRefreshToken != null )
+        {            
+            refreshTokenString = exitsValidRefreshToken.Token;
+        }
+        else
+        {
+           refreshTokenString = RefreshToken.GenerateRefreshToken();
+           var refreshToken = RefreshToken.Create(user.Id, command.DeviceId, refreshTokenString, DateTime.UtcNow.AddDays(7));
+           _refreshTokenRepository.Add(refreshToken);
+        }
 
-        return Result.Success(new LoginResponse(accessToken, refreshToken));
+        return Result.Success(new LoginResponse(accessToken, refreshTokenString));
+    }
+
+    public bool IsExpireTime( DateTime expiryTime)
+    {
+        return DateTime.UtcNow > expiryTime;
     }
 }

@@ -1,0 +1,6 @@
+// Add empty migration 
+dotnet ef migrations add AddRefreshTokenTable --project src/Persistance --startup-project src/API
+
+// Update database with migration
+dotnet ef database update --project src/Persistance --startup-project src/API
+

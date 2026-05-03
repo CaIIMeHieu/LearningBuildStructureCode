@@ -54,4 +54,3 @@ public class LearnLoopWebApplicationFactory : WebApplicationFactory<Program>, IA
         await _dbContainer.StopAsync();
     }
 }
-vif 

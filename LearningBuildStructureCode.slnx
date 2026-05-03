@@ -1,6 +1,7 @@
 <Solution>
   <Folder Name="/docs/">
     <File Path="C#.txt" />
+    <File Path="Cmd.txt" />
     <File Path="Patterns.txt" />
     <File Path="Testing.txt" />
     <File Path="UseCase.txt" />

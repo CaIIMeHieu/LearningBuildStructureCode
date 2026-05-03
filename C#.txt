@@ -13,3 +13,20 @@ hệ thống sẽ xác định loại thực tế của đối tượng tại th
 nếu nó đã được ghi đè (override) trong lớp con đó. Điều này cho phép các lớp con có thể cung cấp các triển khai
 khác nhau cho cùng một phương thức được định nghĩa trong lớp cha, tạo ra sự linh hoạt và khả năng mở rộng
 trong thiết kế phần mềm. 
+
+
+Cú pháp viết tắt của record :
+	public record Product(string Name, decimal Price);
+	Tương đương với :
+
+	public class Product
+	{
+	    public string Name { get; init; }
+	    public decimal Price { get; init; }
+
+	    public Product(string name, decimal price)
+	    {
+	        Name = name;
+	        Price = price;
+	    }
+	}

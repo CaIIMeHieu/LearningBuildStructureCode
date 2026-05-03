@@ -78,5 +78,8 @@ where TRequest : notnull
     }
 
     private bool IsCommand()
-        => typeof(ICommand).IsAssignableFrom(typeof(TRequest));
+    => typeof(ICommand).IsAssignableFrom(typeof(TRequest))
+    || typeof(TRequest).GetInterfaces()
+        .Any(i => i.IsGenericType
+               && i.GetGenericTypeDefinition() == typeof(ICommand<>));
 }

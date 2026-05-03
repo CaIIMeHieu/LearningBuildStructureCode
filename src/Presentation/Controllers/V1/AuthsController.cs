@@ -19,7 +19,7 @@ public class AuthsController: ApiController
     }
 
     [HttpPost("login")]
-    public async Task<IActionResult> Login([FromBody] Application.UserCases.V1.Auth.Command.LoginCommand loginCommand)
+    public async Task<IActionResult> Login([FromBody] Application.UserCases.V1.Auth.CommandSource.LoginCommand loginCommand)
     {
         var result = await Sender.Send(loginCommand);
         if( result.IsSuccess )
@@ -30,9 +30,31 @@ public class AuthsController: ApiController
     }
 
     [HttpPost("register")]
-    public async Task<IActionResult> Register([FromBody] Application.UserCases.V1.Auth.Command.RegisterCommand registerCommand)
+    public async Task<IActionResult> Register([FromBody] Application.UserCases.V1.Auth.CommandSource.RegisterCommand registerCommand)
     {
         var result = await Sender.Send(registerCommand);
+        if( result.IsSuccess )
+        {
+            return Ok(result);
+        }
+        return HandlerFailure(result);
+    }
+
+    [HttpPost("renewAccesstoken")]
+    public async Task<IActionResult> RenewAccessToken([FromBody] Application.UserCases.V1.Auth.CommandSource.RenewAccessTokenCommand command)
+    {
+        var result = await Sender.Send(command);
+        if( result.IsSuccess )
+        {
+            return Ok(result);
+        }
+        return HandlerFailure(result);
+    }
+
+    [HttpPost("logout")]
+    public async Task<IActionResult> Logout([FromBody] Application.UserCases.V1.Auth.CommandSource.RevolkRefreshTokenCommand command)
+    {
+        var result = await Sender.Send(command);
         if( result.IsSuccess )
         {
             return Ok(result);

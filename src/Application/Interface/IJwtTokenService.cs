@@ -10,5 +10,4 @@ namespace Infrastructure.Authentication;
 public interface IJwtTokenService
 {
     string GenerateAccessToken(AppUser user, IList<string> roles);
-    string GenerateRefreshToken();
 }

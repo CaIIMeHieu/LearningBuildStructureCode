@@ -42,12 +42,4 @@ public class JwtTokenService : IJwtTokenService
 
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
-
-    public string GenerateRefreshToken()
-    {
-        var bytes = new byte[64];
-        using var rng = RandomNumberGenerator.Create();
-        rng.GetBytes(bytes);
-        return Convert.ToBase64String(bytes);
-    }
 }

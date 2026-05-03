@@ -17,12 +17,11 @@ public class ApplicationDbContext : IdentityDbContext<Domain.Entities.AppUser,Id
     }
 
     private DbSet<Domain.Entities.Product> Products => Set<Domain.Entities.Product>();
+    private DbSet<Domain.Entities.RefreshToken> RefreshTokens => Set<Domain.Entities.RefreshToken>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(AssemblyReference.Assembly);
         base.OnModelCreating(modelBuilder);
     }
-
-
 }
