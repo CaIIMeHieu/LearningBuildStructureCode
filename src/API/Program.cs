@@ -67,6 +67,16 @@ builder.Services.ConfigureHttpClientDefaults(http =>
     });
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("CorsForTemporaryNoNameApp", policy =>
+    {
+        policy.WithOrigins(builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>()!)
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
 var app = builder.Build();
 
 
@@ -91,7 +101,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.UseCors("CorsForTemporaryNoNameApp");
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();

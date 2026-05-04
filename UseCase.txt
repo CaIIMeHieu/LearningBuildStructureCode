@@ -37,3 +37,18 @@ Tạo project mới (hoặc dùng project có sẵn)
 APIs & Services → Credentials → Create OAuth 2.0 Client ID
 Application type: Web application
 Authorized redirect URIs: 7153https://localhost:7xxx/signin-google (port của project bạn)
+
+
+---------------CORS ( Cross Origin Resource Sharing )-----------------------------------
+CORS là cơ chế bảo mật của trình duyệt để kiểm soát việc chia sẻ tài nguyên giữa các domain khác nhau trừ khi server đó cho phép
+Ví dụ:
+Swagger UI đang chạy ở https://localhost:7153
+Gọi API cũng ở https://localhost:7153 → OK, cùng origin
+Frontend ở https://myapp.com gọi API ở https://api.myapp.com → BLOCKED, khác origin
+"Origin" = scheme + domain + port. Khác 1 trong 3 là khác origin.
+
+! là null-forgiving operator trong C#.
+Nó nói với compiler: "Tôi biết cái này có thể null, nhưng tôi đảm bảo lúc runtime nó không null — đừng warning tôi."
+
+
+
