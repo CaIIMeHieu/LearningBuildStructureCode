@@ -50,5 +50,11 @@ Frontend ở https://myapp.com gọi API ở https://api.myapp.com → BLOCKED, 
 ! là null-forgiving operator trong C#.
 Nó nói với compiler: "Tôi biết cái này có thể null, nhưng tôi đảm bảo lúc runtime nó không null — đừng warning tôi."
 
+---------------Validate tầng domain để giảm thiểu việc connection database----------------------
+Tầng 1 — Domain (constructor/factory method):
+Bảo vệ business invariants. Chạy trong memory, trước khi chạm DB. Nếu vi phạm → throw exception ngay, không cần round-trip DB.
+Tầng 2 — EF/DB (fluent config + DB constraint):
+Bảo vệ data integrity ở tầng lưu trữ. Phòng trường hợp có code nào đó bypass domain layer và insert thẳng vào DB — ví dụ migration script, raw SQL, tool admin.
 
 
+Auto-generated đủ dùng cho tạo bảng mới — nhưng với rename, data migration, split column, hay backfill data thì phải tự viết.

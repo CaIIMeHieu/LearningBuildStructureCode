@@ -18,6 +18,7 @@ public class ApplicationDbContext : IdentityDbContext<Domain.Entities.AppUser,Id
 
     private DbSet<Domain.Entities.Product> Products => Set<Domain.Entities.Product>();
     private DbSet<Domain.Entities.RefreshToken> RefreshTokens => Set<Domain.Entities.RefreshToken>();
+    private DbSet<Domain.Entities.Deck> Decks => Set<Domain.Entities.Deck>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

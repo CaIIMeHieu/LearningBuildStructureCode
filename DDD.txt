@@ -1,0 +1,17 @@
+Nguyên tắc của DDD :
+	Tính bất biến : Đảm bảo dữ liệu entity không bị thay đổi bởi bên ngoài, chỉ có thể thay đổi thông qua phương thức của entity đó
+	Tính toàn vẹn : Đảm bảo dữ liệu luôn ở trạng thái hợp lệ, không bị lỗi hoặc thiếu thông tin ( validate do entity đảm nhiệm )
+	Tính đóng gói : logic thay đổi state nằm trong object để đảm bảo tính nhất quán của dữ liệu
+
+3 khái niệm trong DDD :
+	Entity : có Id, tồn tại độc lập. Hai object cùng data nhưng Id khác nhau = hai thứ khác nhau. Ví dụ: Deck, Tag. ( Định danh căn cước cc )
+	Value Object : không có Id, tồn tại phụ thuộc vào Entity. Hai object cùng data = hai thứ giống nhau. Ví dụ: DeckName ( cùng tên là Hiếu )
+	Aggregate Root : Là Entity chính, có thể chứa Entity khác và Value Object, là đầu vào duy nhất để tương tác với objects bên trong Ví dụ Person( Entity AggregateRoot ) có Name (Value Object) và List<Address> (Entity khác)
+
+
+Khi nào cần valueObject và không cần valueObject
+    Dùng VO khi có validation/behavior riêng, hoặc type đó xuất hiện nhiều nơi với một Rule
+	Không cần VO khi chỉ đơn giản là một kiểu dữ liệu, không có validation/behavior gì đặc biệt
+
+
+
