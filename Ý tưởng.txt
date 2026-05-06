@@ -1,0 +1,17 @@
+﻿Tôi đang có ý tưởng tạo một application có sử dụng ai đóng vai như là trợ lý quản lý tài chính và quản lý thời gian biểu,
+quản lý kiến thức đã học, nhắc nhở nếu chưa hoàn thành nội dung trong ngày ( tham khảo như duolingo, các tính năng giữ chuỗi, nhắc nhở, khen ngợi, phần thưởng đặt ra nếu hoàn thành mục tiêu, gamificatio dopamin ,.. )
+do vấn đề tôi đang gặp phải như sau : 
+	- Có quá nhiều thứ để làm và học, mặc dù đã lên được kế hoạch, dự trù được cả nếu có công việc phát sinh
+	  nhưng mà đang chưa quản lý được chi tiết các đầu việc, ví dụ hôm nay không làm được 1 bài thì sẽ sắp xếp lại làm sao cho
+	  vẫn đảm bảo mục tiêu cả tuần ( hiện tại thì tôi chưa phân chia được đầu việc nhỏ và khi có phát sinh thì cũng chưa tính toán lại để đảm bảo kế hoạch )	
+	
+	- Chưa có kế hoạch ôn tập hợp lý với các kiến thức đã học ( kỹ thuật recall giúp ghi nhớ )
+	- Chưa có kế hoạch quản lý thu chi rõ ràng, số tiền phải để ra được trong một tháng, số tiền được phép chi tiêu để đảm bảo để ra được tiền
+
+
+
+Personal Finance Manager (thu/chi, ngân sách, phân bổ)
+Time/Task Manager (planning, rescheduling khi delay)
+Knowledge Manager với Spaced Repetition (ôn tập có hệ thống)
+AI Personal Assistant (tương tác, nhắc nhở)
+Gamification layer (streak, reward, notification)

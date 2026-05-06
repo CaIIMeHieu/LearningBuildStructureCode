@@ -19,4 +19,29 @@ public class PagedRequest
 
     // Danh sách các cột cần sắp xếp
     public List<SortOption> SortOptions { get; set; } = new List<SortOption>();
+    public string? Sort
+    {
+        set
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                return;
+            SortOptions = value.Split(',').Select( S =>
+            {
+                var parts = S.Trim().Split('-');
+                if (parts.Length != 2)
+                    return null;
+                if (!parts[1].Equals("ASC", StringComparison.OrdinalIgnoreCase) &&
+                    !parts[1].Equals("DESC", StringComparison.OrdinalIgnoreCase))
+                    return null;
+                return new SortOption
+                {
+                    Field = parts[0],
+                    IsDescending = parts[1].Equals("DESC", StringComparison.OrdinalIgnoreCase)
+                };
+            })
+            .Where(s => s != null)
+            .Select(s => s!)
+            .ToList();
+        }
+    }
 }

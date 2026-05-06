@@ -11,7 +11,8 @@ public enum ErrorTypeEnum
     None,
     NotFound,
     Validation,
-    Conflict
+    Conflict,
+    Unauthorized,
 }
 
 public class Error : IEquatable<Error>
@@ -53,6 +54,7 @@ public class Error : IEquatable<Error>
     public static Error NotFound(string code, string message) => new Error(code, message, ErrorTypeEnum.NotFound);
     public static Error Validation(string code, string message) => new Error(code, message, ErrorTypeEnum.Validation);
     public static Error Conflict(string code, string message) => new Error(code, message, ErrorTypeEnum.Conflict);
+    public static Error Unauthorized(string code, string message) => new Error(code, message, ErrorTypeEnum.Unauthorized);
     public virtual bool Equals(Error? other)
     {
         if (other is null)

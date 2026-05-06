@@ -31,6 +31,7 @@ public abstract class ApiController : ControllerBase
                         validationResult.Errors)),
             { Error.ErrorType: ErrorTypeEnum.NotFound } => NotFound(CreateProblemDetails("Not Found", StatusCodes.Status404NotFound, result.Error)),
             { Error.ErrorType : ErrorTypeEnum.Conflict } => Conflict(CreateProblemDetails("Conflict", StatusCodes.Status409Conflict, result.Error)),
+            { Error.ErrorType : ErrorTypeEnum.Unauthorized } => Unauthorized(CreateProblemDetails("Unauthorized", StatusCodes.Status401Unauthorized, result.Error)),
             _ => BadRequest(CreateProblemDetails("Bad Request", StatusCodes.Status400BadRequest, result.Error))
         };
 

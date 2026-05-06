@@ -1,0 +1,18 @@
+﻿1. Register / Login (JWT hoặc Google OAuth2)
+        ↓
+2. Tạo Deck — "chủ đề học" (vd: "ASP.NET Core", "Tiếng Nhật N3")
+        ↓
+3. Thêm Card vào Deck — mỗi Card là 1 đơn vị kiến thức
+   Card có 2 dạng:
+   - Q&A: Question + Answer
+   - Note: ghi chú tự do (AI sẽ đọc và gợi ý câu hỏi)
+        ↓
+4. AI đọc ghi chú → gợi ý câu hỏi → user approve → thành Card
+        ↓
+5. Mỗi ngày: system hiển thị các Card "đến hạn ôn" (SM-2 algorithm quyết định)
+        ↓
+6. User review từng Card → đánh giá: Again / Hard / Good / Easy
+   → SM-2 tính lịch review tiếp theo (1 ngày / 3 ngày / 1 tuần / v.v.)
+        ↓
+7. Streak tracking: review đủ mỗi ngày → streak tăng
+   Reminder email: hôm nay chưa review → 9h tối nhận email nhắc

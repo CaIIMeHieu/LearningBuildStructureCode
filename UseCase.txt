@@ -58,3 +58,15 @@ Bảo vệ data integrity ở tầng lưu trữ. Phòng trường hợp có code
 
 
 Auto-generated đủ dùng cho tạo bảng mới — nhưng với rename, data migration, split column, hay backfill data thì phải tự viết.
+
+
+----------------Có user trong httpContext ------------------------
+Bởi vì theo luồng middleware : Request → Authentication Middleware → Authorization Middleware → Controller
+Authentication Middleware đọc JWT từ header Authorization: Bearer <token>, verify signature, rồi deserialize Claims từ payload vào HttpContext.User — đây là ClaimsPrincipal
+
+
+---------------3 tầng validate---------------------------------
+1.Fluent validation ở tầng API ( request validator ) : validate dữ liệu đầu vào, nếu có lỗi sẽ trả về BadRequest với chi tiết lỗi luôn
+2. Validate ở tầng domain ( constructor/factory method ) : validate business invariant, phòng trường hợp có code nào đó gọi thẳng Deck.Create(name, description) mà không đi qua pipeline của MediatR
+3. DB chặn : tầng cuối cùng đảm bảo dữ liêu luôn đúng
+

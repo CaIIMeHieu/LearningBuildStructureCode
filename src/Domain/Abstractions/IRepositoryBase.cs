@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+using Contract.Abstractions.Shared;
 
 namespace Domain.Abstractions;
 
@@ -14,6 +15,12 @@ public interface IRepositoryBase<TEntity, in TKey> where TEntity : class
     Task<TEntity> FindSingleAsync(Expression<Func<TEntity, bool>>? predicate = null, CancellationToken cancellationToken = default, params Expression<Func<TEntity, object>>[] includeProperties);
 
     IQueryable<TEntity> FindAll(Expression<Func<TEntity, bool>>? predicate = null, params Expression<Func<TEntity, object>>[] includeProperties);
+    Task<PageResultT<TEntity>> FindAllPagedAsync(
+            PagedRequest request,
+            Expression<Func<TEntity, bool>>? predicate = null,
+            CancellationToken cancellationToken = default,
+            params Expression<Func<TEntity, object>>[] includeProperties
+    );
 
     void Add(TEntity entity);
 
