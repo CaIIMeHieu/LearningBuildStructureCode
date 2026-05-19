@@ -70,3 +70,11 @@ Authentication Middleware đọc JWT từ header Authorization: Bearer <token>, 
 2. Validate ở tầng domain ( constructor/factory method ) : validate business invariant, phòng trường hợp có code nào đó gọi thẳng Deck.Create(name, description) mà không đi qua pipeline của MediatR
 3. DB chặn : tầng cuối cùng đảm bảo dữ liêu luôn đúng
 
+
+--------------- Phân biệt Entity với Aggregate Root---------------
+Entity khi :
+	Chỉ được tạo qua Aggregate Root
+	Bất biến hoặc chỉ thay đổi trong context của Aggregate Root
+	Không có vòng đời riêng biệt          
+
+

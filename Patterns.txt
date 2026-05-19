@@ -16,10 +16,3 @@ Sự khác nhau giữa Event và Command,Query trong MediatR là :
 	Event : có thể có nhiều handler xử lý cùng một event và không trả về kết quả
 	Command,Query : chỉ có một handler xử lý và trả về kết quả
 
-trong file kiến thức của tôi có ConvertDomainEventsToOutboxMessagesInterceptor nhưng project của tôi bị miss file đó
-
-Tôi đã đọc các method liên quan trong AggregateRoot và Product. là khi product được tạo sẽ 
-raise một event ProductCreatedEvent
-và List<IDomain> _domainEvents sẽ được thêm vào
-
-

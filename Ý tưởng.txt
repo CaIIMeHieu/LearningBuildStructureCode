@@ -15,3 +15,4 @@ Time/Task Manager (planning, rescheduling khi delay)
 Knowledge Manager với Spaced Repetition (ôn tập có hệ thống)
 AI Personal Assistant (tương tác, nhắc nhở)
 Gamification layer (streak, reward, notification)
+
