@@ -8,16 +8,14 @@ using Contract.Abstractions.Message;
 using Contract.Abstractions.Shared;
 using Domain.Abstractions;
 
-namespace Application.UserCases.V1.Card.Handler;
+namespace Application.UserCases.V1.Card.Handler.Command;
 
 public class ReviewCardCommandHandler : ICommandHandler<CommandSource.ReviewCardCommand>
 {
     private readonly IRepositoryBase<Domain.Entities.Card, Guid> _cardRepository;
-    private readonly IRepositoryBase<Domain.Entities.ReviewLog, Guid> _reviewLogRepository;
-    public ReviewCardCommandHandler(IRepositoryBase<Domain.Entities.Card, Guid> cardRepository, IRepositoryBase<Domain.Entities.ReviewLog, Guid> reviewLogRepository)
+    public ReviewCardCommandHandler(IRepositoryBase<Domain.Entities.Card, Guid> cardRepository)
     {
         _cardRepository = cardRepository;
-        _reviewLogRepository = reviewLogRepository;
     }
 
     public async Task<Result> Handle(CommandSource.ReviewCardCommand request, CancellationToken cancellationToken)
@@ -30,7 +28,6 @@ public class ReviewCardCommandHandler : ICommandHandler<CommandSource.ReviewCard
         card.Review(request.Quality);
         var reviewLog = Domain.Entities.ReviewLog.Create(card.Id, request.Quality);
         _cardRepository.Update(card);
-        _reviewLogRepository.Add(reviewLog);
         return Result.Success();
     }
 }

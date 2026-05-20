@@ -13,5 +13,21 @@ Khi nào cần valueObject và không cần valueObject
     Dùng VO khi có validation/behavior riêng, hoặc type đó xuất hiện nhiều nơi với một Rule
 	Không cần VO khi chỉ đơn giản là một kiểu dữ liệu, không có validation/behavior gì đặc biệt
 
+--------------- Phân biệt Entity với Aggregate Root---------------
+Quyết định phân chia Entity và AggregateRoot dựa theo : 
+	transaction (những gì cần thay đổi cùng nhau (ví dụ khi thêm mới ReviewLog cũng cần tính toán lại các chỉ số SM2 ở Card) ) và performance (thêm mới một entity có cần ảnh hưởng đến việc kéo toàn bộ entity lên RAM ko)
 
+Các dấu hiệu để quyết định một Entity có phải là Aggregate Root hay không :
+	Có thể tạo mới độc lập không ảnh hưởng đến business invariant khác -> Aggregate Root
+		Có thể tạo mới nhưng cần đảm bảo business invariant của một Aggregate Root khác -> Entity
+	
+	Để tạo mới một entity, nếu phải load toàn bộ aggregate root lên RAM gây phình RAM thì nên tách entity đó ra khỏi aggregate root
+
+Object X có thể tạo độc lập mà data vẫn đúng?
+├── Có → Aggregate Root (có repo riêng)
+└── Không → tiếp
+
+Tạo X mà không đi qua AR thì side effect bị bỏ sót?
+├── Có → Entity của AR (không có repo riêng)
+└── Không → xem xét lại business
 

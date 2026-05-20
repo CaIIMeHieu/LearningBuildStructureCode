@@ -9,7 +9,7 @@ using Contract.Abstractions.Shared;
 using Domain.Abstractions;
 using Microsoft.AspNetCore.Mvc.Diagnostics;
 
-namespace Application.UserCases.V1.Card.Handler;
+namespace Application.UserCases.V1.Card.Handler.Command;
 
 public class CreateCardCommandHandler : ICommandHandler<CommandSource.CreateCardCommand>
 {

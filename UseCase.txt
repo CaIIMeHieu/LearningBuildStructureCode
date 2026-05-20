@@ -71,10 +71,9 @@ Authentication Middleware đọc JWT từ header Authorization: Bearer <token>, 
 3. DB chặn : tầng cuối cùng đảm bảo dữ liêu luôn đúng
 
 
---------------- Phân biệt Entity với Aggregate Root---------------
-Entity khi :
-	Chỉ được tạo qua Aggregate Root
-	Bất biến hoặc chỉ thay đổi trong context của Aggregate Root
-	Không có vòng đời riêng biệt          
+
+
+
+
 
 

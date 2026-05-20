@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Persistance.DBContext;
 
@@ -11,9 +12,11 @@ using Persistance.DBContext;
 namespace Persistance.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260520042940_AddCardAndReviewLogTable")]
+    partial class AddCardAndReviewLogTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -126,7 +129,8 @@ namespace Persistance.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Note")
-                        .HasColumnType("nvarchar(4000)");
+                        .HasMaxLength(10000)
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Question")
                         .IsRequired()
@@ -141,7 +145,7 @@ namespace Persistance.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DeckId", "RecallDate");
+                    b.HasIndex("DeckId");
 
                     b.ToTable("Cards", (string)null);
                 });
