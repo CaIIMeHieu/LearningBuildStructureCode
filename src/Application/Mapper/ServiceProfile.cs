@@ -14,5 +14,6 @@ public class ServiceProfile : Profile
     public ServiceProfile()
     {
         CreateMap<Product, Response.ProductResponse>();
+        CreateMap<Card, Application.UserCases.V1.Card.Response.CardResponse>();
     }
 }

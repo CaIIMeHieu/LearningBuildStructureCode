@@ -73,7 +73,7 @@ public class Card : AggregateRoot
             EaseFactor = Math.Min(2.5, EaseFactor + 0.15);
             Repetitions++;
         }
-        RecallDate = DateTime.Now.AddDays(Interval);
+        RecallDate = DateTime.UtcNow.AddDays(Interval);
         _reviewLogs.Add(ReviewLog.Create(Id, quality));
     }
 }

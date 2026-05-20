@@ -32,6 +32,6 @@ public class ReviewLog
         {
             throw new ArgumentException("Invalid quality value.");
         }
-        return new ReviewLog(Guid.NewGuid(), cardId, DateTime.Now, quality);
+        return new ReviewLog(Guid.NewGuid(), cardId, DateTime.UtcNow, quality);
     }
 }

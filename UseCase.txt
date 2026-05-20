@@ -71,9 +71,6 @@ Authentication Middleware đọc JWT từ header Authorization: Bearer <token>, 
 3. DB chặn : tầng cuối cùng đảm bảo dữ liêu luôn đúng
 
 
-
-
-
-
-
+--------------lấy bản ghi thỏa mãn trong ngày------------------
+RecallDate <= DateTime.UtcNow.Date
 

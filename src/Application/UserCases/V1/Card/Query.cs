@@ -10,5 +10,5 @@ namespace Application.UserCases.V1.Card;
 
 public class QuerySource
 {
-    public record GetDueCardsQuery( Guid DeckId, Guid UserId, PagedRequest PagedRequest ) : IQuery<List<Response.CardResponse>>;
+    public record GetDueCardsQuery( Guid DeckId, Guid userId, PagedRequest PagedRequest ) : IQuery<List<Response.CardResponse>>;
 }
