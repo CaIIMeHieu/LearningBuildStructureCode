@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using Contract.Abstractions.Message;
@@ -23,12 +24,12 @@ public class CreateDeckCommandHandler : ICommandHandler<CommandSource.CreateDeck
 
     public async Task<Result> Handle(CommandSource.CreateDeckCommand request, CancellationToken cancellationToken)
     {
-        var userId = _httpContextAccessor.HttpContext?.User.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
-        if( string.IsNullOrEmpty(userId) )
+        var userId = Guid.Parse(_httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        if ( userId == Guid.Empty )
         {
             return Result.Failure(Error.Unauthorized("Unauthorized", "User is not authenticated."));
         }
-        var deck = Domain.Entities.Deck.Create(request.Name, request.Description, Guid.Parse(userId));
+        var deck = Domain.Entities.Deck.Create(request.Name, request.Description, userId);
         _deckRepository.Add(deck);
         return Result.Success();
     }

@@ -17,15 +17,20 @@ public class CardConfiguration : IEntityTypeConfiguration<Domain.Entities.Card>
         builder.HasKey(c => c.Id);
         builder.Property(c => c.Question).HasMaxLength(500).IsRequired();
         builder.Property(c => c.Answer).HasMaxLength(500).IsRequired();
-        builder.Property(x => x.Note)
+        builder.Property(c => c.Note)
             .HasColumnType("nvarchar(4000)");
 
-        builder.Property(x => x.EaseFactor)
+        builder.Property(c => c.EaseFactor)
             .HasPrecision(4, 2);
+        builder.Property(c => c.OwnerId)
+            .IsRequired();
         builder.HasMany(c => c.ReviewLogs)
-               .WithOne()
+               .WithOne()               
                .HasForeignKey(rl => rl.CardId)
                .OnDelete(DeleteBehavior.Cascade);
+        builder.Navigation(c => c.ReviewLogs)
+               .HasField("_reviewLogs")
+               .UsePropertyAccessMode(PropertyAccessMode.Field);
         builder.HasOne<Deck>()
                .WithMany()
                .HasForeignKey(c => c.DeckId)

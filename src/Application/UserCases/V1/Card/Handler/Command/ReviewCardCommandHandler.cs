@@ -26,7 +26,6 @@ public class ReviewCardCommandHandler : ICommandHandler<CommandSource.ReviewCard
             return Result.Failure(Error.NotFound("Card not found","Card not found"));
         }
         card.Review(request.Quality);
-        var reviewLog = Domain.Entities.ReviewLog.Create(card.Id, request.Quality);
         _cardRepository.Update(card);
         return Result.Success();
     }

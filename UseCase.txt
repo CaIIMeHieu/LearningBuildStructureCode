@@ -64,6 +64,8 @@ Auto-generated đủ dùng cho tạo bảng mới — nhưng với rename, data 
 Bởi vì theo luồng middleware : Request → Authentication Middleware → Authorization Middleware → Controller
 Authentication Middleware đọc JWT từ header Authorization: Bearer <token>, verify signature, rồi deserialize Claims từ payload vào HttpContext.User — đây là ClaimsPrincipal
 
+tại sao lại lấy user ở tầng controller
+
 
 ---------------3 tầng validate---------------------------------
 1.Fluent validation ở tầng API ( request validator ) : validate dữ liệu đầu vào, nếu có lỗi sẽ trả về BadRequest với chi tiết lỗi luôn

@@ -42,3 +42,4 @@ Single vs Split Query
     Khi Include nhiều collection, EF Core mặc định dùng Single Query với JOIN
 
 
+produce trong controller

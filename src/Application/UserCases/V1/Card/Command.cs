@@ -9,6 +9,6 @@ namespace Application.UserCases.V1.Card;
 
 public class CommandSource
 {
-    public record CreateCardCommand(Guid DeckId, string Question, string Answer, string? Note) : ICommand;
-    public record ReviewCardCommand(Guid CardId, string Quality) : ICommand;
+    public record CreateCardCommand(Guid DeckId, string Question, string Answer, string? Note, Guid OwnerId) : ICommand;
+    public record ReviewCardCommand(Guid CardId, string Quality, Guid OwnerId) : ICommand;
 }

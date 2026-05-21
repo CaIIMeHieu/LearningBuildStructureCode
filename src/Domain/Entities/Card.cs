@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Contract.Abstractions.Message;
 using Domain.Abstractions.Entities;
 using Domain.Constants;
 
@@ -11,6 +12,7 @@ namespace Domain.Entities;
 public class Card : AggregateRoot
 {
     public Guid DeckId { get; private set; }
+    public Guid OwnerId { get; private set; }
     public string Question { get; private set; } = string.Empty;
     public string Answer { get; private set; } = string.Empty;
     public string? Note { get; private set; }
@@ -24,25 +26,30 @@ public class Card : AggregateRoot
     public IReadOnlyList<ReviewLog> ReviewLogs => _reviewLogs.AsReadOnly();
 
     protected Card() { }
-    private Card(Guid id, Guid deckId, string question, string answer, string? note): base(id)
+    private Card(Guid id, Guid deckId, string question, string answer, string? note, Guid ownerId) : base(id)
     {
         DeckId = deckId;
         Question = question;
         Answer = answer;
         Note = note;
+        OwnerId = ownerId;
     }
 
-    public static Card Create(Guid deckId, string question, string answer, string? note)
+    public static Card Create(Guid deckId, string question, string answer, string? note, Guid ownerId)
     {
         if (deckId == Guid.Empty)
             throw new ArgumentException("Deck ID cannot be empty.");
+        if (ownerId == Guid.Empty)
+            throw new ArgumentException("Owner ID cannot be empty.");
         if (string.IsNullOrWhiteSpace(question))
             throw new ArgumentException("Question cannot be empty or null.");
         if (string.IsNullOrWhiteSpace(answer))
             throw new ArgumentException("Answer cannot be empty or null.");
-        return new Card(Guid.NewGuid(), deckId, question, answer, note);
+        var card = new Card(Guid.NewGuid(), deckId, question, answer, note, ownerId);
+        card.RaiseDomainEvent(new CardCreatedEvent(card.Id, deckId, ownerId));
+        return card;
     }
-
+     
     public void Review(string quality)
     {
         string[] standardQuality = { QualityCard.Again, QualityCard.Hard, QualityCard.Good, QualityCard.Easy };
@@ -64,16 +71,21 @@ public class Card : AggregateRoot
         }
         else if (quality == QualityCard.Good)
         {
-            Interval = (int)(Interval * EaseFactor);
+            Interval = Math.Max(1, (int)(Interval * EaseFactor));
             Repetitions++;
         }
         else if (quality == QualityCard.Easy)
         {
-            Interval = (int)(Interval * EaseFactor * 1.3);
+            Interval = Math.Max(1, (int)(Interval * EaseFactor * 1.3));
             EaseFactor = Math.Min(2.5, EaseFactor + 0.15);
             Repetitions++;
         }
         RecallDate = DateTime.UtcNow.AddDays(Interval);
         _reviewLogs.Add(ReviewLog.Create(Id, quality));
+        RaiseDomainEvent(new CardReviewedEvent(Id, DeckId, OwnerId));
     }
+
+    public record CardCreatedEvent(Guid Id, Guid DeckId, Guid OwnerId) : IDomain;
+    public record CardReviewedEvent(Guid Id, Guid DeckId, Guid OwnerId) : IDomain;
+
 }

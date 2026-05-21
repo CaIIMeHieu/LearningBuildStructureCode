@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using Contract.Abstractions.Message;
@@ -26,13 +27,12 @@ public class GetUserDecksQueryHandler : IQueryHandler<QuerySource.GetUserDecksQu
     public async Task<Result<PageResultT<Domain.Entities.Deck>>> Handle(
         GetUserDecksQuery request, CancellationToken cancellationToken)
     {
-        var userId = _httpContextAccessor.HttpContext?.User
-            .Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
-        if (string.IsNullOrEmpty(userId))
+        var userId = Guid.Parse(_httpContextAccessor?.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        if ( userId == Guid.Empty )
             return Result.Failure<PageResultT<Domain.Entities.Deck>>(
                 Error.Unauthorized("Unauthorized", "User is not authenticated."));
 
-        var ownerGuid = Guid.Parse(userId);
+        var ownerGuid = userId;
 
         var pagedDecks = await _deckRepository.FindAllPagedAsync(
             request.PagedRequest,
