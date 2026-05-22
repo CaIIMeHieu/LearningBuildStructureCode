@@ -19,13 +19,11 @@ public class GetDueCardsQueryHandler : IQueryHandler<QuerySource.GetDueCardsQuer
     private readonly IRepositoryBase<Domain.Entities.Card, Guid> _cardRepository;
     private readonly IRepositoryBase<Domain.Entities.Deck, Guid> _deckRepository;
     private readonly IMapper _mapper;
-    private readonly IHttpContextAccessor _httpContextAccessor;
-    public GetDueCardsQueryHandler(IRepositoryBase<Domain.Entities.Card, Guid> cardRepository, IRepositoryBase<Domain.Entities.Deck, Guid> deckRepository, IMapper mapper, IHttpContextAccessor httpContextAccessor)
+    public GetDueCardsQueryHandler(IRepositoryBase<Domain.Entities.Card, Guid> cardRepository, IRepositoryBase<Domain.Entities.Deck, Guid> deckRepository, IMapper mapper)
     {
         _cardRepository = cardRepository;
         _deckRepository = deckRepository;
         _mapper = mapper;
-        _httpContextAccessor = httpContextAccessor;
     }
 
     public async Task<Result<List<Response.CardResponse>>> Handle(QuerySource.GetDueCardsQuery request, CancellationToken cancellationToken)
