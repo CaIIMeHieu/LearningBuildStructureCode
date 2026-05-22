@@ -16,3 +16,120 @@ Sự khác nhau giữa Event và Command,Query trong MediatR là :
 	Event : có thể có nhiều handler xử lý cùng một event và không trả về kết quả
 	Command,Query : chỉ có một handler xử lý và trả về kết quả
 
+
+---------------------------------------------
+
+Factory Pattern
+	Mục đích: Cung cấp một interface để tạo đối tượng, nhưng để cho các lớp con quyết định lớp nào sẽ được khởi tạo.
+	Ví dụ thực tế: Tạo kết nối database, tạo đối tượng theo cấu hình.
+
+Khi tạo mới một class 
+Trong vùng nhớ Heap (RAM) của máy tính, .NET sẽ cấp phát một vùng nhớ cho cái object này. Vùng nhớ này chứa 3 thứ cực kỳ quan trọng:
+Object Header (Tiêu đề object): Dùng để chứa thông tin rác (Garbage Collection) và thông tin khóa (lock) mà anh em mình học ở bài Đa luồng.
+TypeHandle (Con trỏ Kiểu dữ liệu): Đây là cánh cổng thần kỳ. Nó là một mũi tên (con trỏ) trỏ đến một nơi khác trong RAM gọi là MethodTable (Bảng Phương Thức) của class này.
+Dữ liệu các biến: (Ví dụ nếu class có biến int id, string name thì nó nằm ở đây).
+
+Khi chương trình vừa khởi động, .NET sẽ đọc toàn bộ code và tạo ra cho mỗi Class một cái MethodTable (chỉ tạo 1 lần duy nhất cho mỗi class và để ở vùng nhớ dùng chung).
+trong MethodTable sẽ có V-Table chứa các con trỏ trỏ đến phương thức của class đó
+
+Các bước sử dụng Factory Pattern:
+Bước 1: Định nghĩa bussiness
+	1. Tạo interface, một cái khung chung cho nghiệp vụ
+	2. Implement interface đó với các instance cụ thể
+
+Bước 2: Xây dựng nhà máy
+	Có 2 cách xây dựng nhà máy:
+		1. Simple Factory: Tạo một lớp có một phương thức tĩnh để tạo các đối tượng dựa trên tham số đầu vào.
+			Ví dụ: ShapeFactory.CreateShape(string shapeType) → trả về Circle, Square, v.v. dựa trên shapeType.
+			Ưu điểm: Đơn giản, dễ hiểu.
+			Nhược điểm: Không tuân theo nguyên tắc mở-đóng (Open-Closed Principle) — mỗi khi thêm loại mới phải sửa code của factory.
+		2. Factory Method: Định nghĩa một phương thức tạo đối tượng trong một lớp cơ sở (abstract class hoặc interface), và để các lớp con quyết định lớp nào sẽ được khởi tạo.
+			Ví dụ: ShapeFactory có phương thức CreateShape(), và CircleFactory, SquareFactory sẽ kế thừa ShapeFactory và implement CreateShape() để trả về Circle, Square tương ứng.
+			Ưu điểm: Tuân theo nguyên tắc mở-đóng — thêm loại mới chỉ cần tạo thêm lớp con mà không sửa code của factory.
+			Nhược điểm: Phức tạp hơn so với Simple Factory.
+
+public interface IReport
+{
+    string ReportType { get; }
+    void GenerateReport();
+}
+
+public class PdfReport : IReport
+{
+    public string ReportType => "Pdf";
+
+    public void GenerateReport()
+    {
+        Console.WriteLine("Generated Pdf reports");
+    }
+}
+
+public class ExcelReport : IReport
+{
+    public string ReportType => "Excel";
+    public void GenerateReport()
+    {
+        Console.WriteLine("Generated Excel reports");
+    }
+}
+
+public interface IReportFactory
+{
+    IReport CreateReport( string type );
+}
+
+public class ReportFactory : IReportFactory
+{
+    private readonly IEnumerable<IReport> _reports;
+
+    public ReportFactory( IEnumerable<IReport> reports )
+    {
+        _reports = reports;
+    }
+
+    public IReport CreateReport( string type )
+    {
+        return _reports.FirstOrDefault( r => r.ReportType == type )
+               ?? throw new ArgumentException("Invalid report type");
+    }
+}
+
+// DJ
+builder.Services.AddScoped<IReport, PdfReport>();
+builder.Services.AddScoped<IReport, ExcelReport>();
+builder.Services.AddScoped<IReportFactory, ReportFactory>();
+
+// Cách sử dụng
+[ApiController]
+[Route("api/[controller]")]
+public class ReportController : ControllerBase
+{
+    private readonly IReportFactory _reportFactory;
+
+    // Xin DI tiêm cái nhà máy vào đây
+    public ReportController(IReportFactory reportFactory)
+    {
+        _reportFactory = reportFactory;
+    }
+
+    [HttpGet("export/{type}")] // Ví dụ user gọi API: GET /api/report/export/PDF
+    public IActionResult ExportReport(string type)
+    {
+        try
+        {
+            // 1. Nhờ nhà máy chế tạo ra cái báo cáo theo yêu cầu của User
+            IReport report = _reportFactory.CreateReport(type);
+
+            // 2. Thực thi (Lúc này Virtual Dispatch sẽ làm việc)
+            report.Generate();
+
+            return Ok($"Đã xuất báo cáo {type} thành công!");
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+}
+
+-----------------------------------------------------------------------------------------------------
