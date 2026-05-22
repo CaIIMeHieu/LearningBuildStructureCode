@@ -18,7 +18,7 @@ public class RepositoryBase<TEntity, TKey> : IRepositoryBase<TEntity, TKey>, IDi
         where TEntity : DomainEntity<TKey>
 {
 
-    private readonly ApplicationDbContext _context;
+    protected readonly ApplicationDbContext _context;
 
     public RepositoryBase(ApplicationDbContext context)
         => _context = context;

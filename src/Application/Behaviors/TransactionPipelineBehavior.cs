@@ -54,10 +54,9 @@ where TRequest : notnull
 
         //IMPORTANT: passing "TransactionScopeAsyncFlowOption.Enabled" to the TransactionScope constructor. This is necessary to be able to use it with async/await.
         using (var transaction = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
-        {            
+        {
             var response = await next();
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
-            // dispatch event here            
+
             var aggregateRoots = _context.ChangeTracker.Entries()
                 .Select(e => e.Entity)
                 .OfType<AggregateRoot>()
@@ -65,12 +64,13 @@ where TRequest : notnull
             var domainEvents = aggregateRoots
                 .SelectMany(e => e.DomainEvents)
                 .ToList();
-            foreach (var domainEvent in domainEvents)
-            {
-                await _publisher.Publish(domainEvent, cancellationToken);
-            }
             aggregateRoots.ForEach(e => e.ClearDomainEvent());
-            transaction.Complete();            
+
+            foreach (var domainEvent in domainEvents)
+                await _publisher.Publish(domainEvent, cancellationToken);
+
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+            transaction.Complete();
             return response;
         }
         #endregion ============== SQL-SERVER-STRATEGY-2 ==============

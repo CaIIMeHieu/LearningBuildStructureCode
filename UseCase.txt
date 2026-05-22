@@ -76,3 +76,7 @@ tại sao lại lấy user ở tầng controller
 --------------lấy bản ghi thỏa mãn trong ngày------------------
 RecallDate <= DateTime.UtcNow.Date
 
+Domain Event — enforce invariant qua architecture
+Vấn đề: ReviewLog cần được tạo cùng lúc với Card.Review() — không thể tạo độc lập.
+Giải pháp: Card.Review() raise CardReviewedEvent → CardReviewedEventHandler tạo ReviewLog.
+Kết quả: Không ai tạo được ReviewLog mà không có Card.Review() xảy ra trước — convention enforce qua event flow, không phải type system.

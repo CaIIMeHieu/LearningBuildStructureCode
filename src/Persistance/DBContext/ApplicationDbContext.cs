@@ -19,7 +19,7 @@ public class ApplicationDbContext : IdentityDbContext<Domain.Entities.AppUser,Id
     private DbSet<Domain.Entities.Product> Products => Set<Domain.Entities.Product>();
     private DbSet<Domain.Entities.RefreshToken> RefreshTokens => Set<Domain.Entities.RefreshToken>();
     private DbSet<Domain.Entities.Deck> Decks => Set<Domain.Entities.Deck>();
-    private DbSet<Domain.Entities.Card> Cards => Set<Domain.Entities.Card>();
+    public DbSet<Domain.Entities.Card> Cards => Set<Domain.Entities.Card>();
     private DbSet<Domain.Entities.ReviewLog> ReviewLogs => Set<Domain.Entities.ReviewLog>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

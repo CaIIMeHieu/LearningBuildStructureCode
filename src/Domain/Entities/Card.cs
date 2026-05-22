@@ -21,10 +21,6 @@ public class Card : AggregateRoot
     public int Interval { get; private set; } = 1;
     public double EaseFactor { get; private set; } = 2.5;
     public int Repetitions { get; private set; } = 0;
-    private readonly List<ReviewLog> _reviewLogs = new ();
-    // tách riêng field và property để đảm bảo chỉ có thể đọc từ bên ngoài và không thể sửa đổi trực tiếp danh sách review logs từ bên ngoài lớp
-    public IReadOnlyList<ReviewLog> ReviewLogs => _reviewLogs.AsReadOnly();
-
     protected Card() { }
     private Card(Guid id, Guid deckId, string question, string answer, string? note, Guid ownerId) : base(id)
     {
@@ -81,11 +77,10 @@ public class Card : AggregateRoot
             Repetitions++;
         }
         RecallDate = DateTime.UtcNow.AddDays(Interval);
-        _reviewLogs.Add(ReviewLog.Create(Id, quality));
-        RaiseDomainEvent(new CardReviewedEvent(Id, DeckId, OwnerId));
+        RaiseDomainEvent(new CardReviewedEvent(Id, DeckId, OwnerId, quality));
     }
 
     public record CardCreatedEvent(Guid Id, Guid DeckId, Guid OwnerId) : IDomain;
-    public record CardReviewedEvent(Guid Id, Guid DeckId, Guid OwnerId) : IDomain;
+    public record CardReviewedEvent(Guid Id, Guid DeckId, Guid OwnerId, string Quality) : IDomain;
 
 }

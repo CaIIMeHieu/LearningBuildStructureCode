@@ -24,13 +24,6 @@ public class CardConfiguration : IEntityTypeConfiguration<Domain.Entities.Card>
             .HasPrecision(4, 2);
         builder.Property(c => c.OwnerId)
             .IsRequired();
-        builder.HasMany(c => c.ReviewLogs)
-               .WithOne()               
-               .HasForeignKey(rl => rl.CardId)
-               .OnDelete(DeleteBehavior.Cascade);
-        builder.Navigation(c => c.ReviewLogs)
-               .HasField("_reviewLogs")
-               .UsePropertyAccessMode(PropertyAccessMode.Field);
         builder.HasOne<Deck>()
                .WithMany()
                .HasForeignKey(c => c.DeckId)
