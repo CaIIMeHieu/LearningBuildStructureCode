@@ -9,6 +9,8 @@
     <File Path="V1_Knowledge Manager với Spaced Repetition.txt" />
     <File Path="Ý tưởng.txt" />
   </Folder>
+  <Folder Name="/docs/Design/" />
+  <Folder Name="/docs/Design/ProfileScreen/" />
   <Folder Name="/Solution Items/">
     <File Path=".editorconfig" />
     <File Path="Directory.Build.props" />
