@@ -5,9 +5,11 @@ Nguyên tắc của DDD :
 
 3 khái niệm trong DDD :
 	Entity : có Id, tồn tại độc lập. Hai object cùng data nhưng Id khác nhau = hai thứ khác nhau. Ví dụ: Deck, Tag. ( Định danh căn cước cc )
-	Value Object : không có Id, tồn tại phụ thuộc vào Entity. Hai object cùng data = hai thứ giống nhau. Ví dụ: DeckName ( cùng tên là Hiếu )
+	Value Object : không có Id, tồn tại phụ thuộc vào Entity. Hai object cùng data = hai thứ giống nhau. Ví dụ: DeckName ( cùng tên là Hiếu ) được nhận diện bởi context của aggreate chứa nó
 	Aggregate Root : Là Entity chính, có thể chứa Entity khác và Value Object, là đầu vào duy nhất để tương tác với objects bên trong Ví dụ Person( Entity AggregateRoot ) có Name (Value Object) và List<Address> (Entity khác)
 
+Khi cân nhắc Entity hay là VO thì xem xét đến nếu nghiệp vụ yêu cầu query độc lập thì nên là Entity
+Nếu chỉ cần một kiểu dữ liệu đơn giản thì có thể là VO.
 
 Khi nào cần valueObject và không cần valueObject
     Dùng VO khi có validation/behavior riêng, hoặc type đó xuất hiện nhiều nơi với một Rule
@@ -30,4 +32,6 @@ Object X có thể tạo độc lập mà data vẫn đúng?
 Tạo X mà không đi qua AR thì side effect bị bỏ sót?
 ├── Có → Entity của AR (không có repo riêng)
 └── Không → xem xét lại business
+
+
 

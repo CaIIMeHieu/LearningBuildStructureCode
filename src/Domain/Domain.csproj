@@ -9,7 +9,6 @@
 
   <ItemGroup>
     <Folder Include="Abstractions\Repositories\" />
-    <Folder Include="Enumerations\" />
   </ItemGroup>
 
   <ItemGroup>

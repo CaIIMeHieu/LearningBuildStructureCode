@@ -80,3 +80,5 @@ Domain Event — enforce invariant qua architecture
 Vấn đề: ReviewLog cần được tạo cùng lúc với Card.Review() — không thể tạo độc lập.
 Giải pháp: Card.Review() raise CardReviewedEvent → CardReviewedEventHandler tạo ReviewLog.
 Kết quả: Không ai tạo được ReviewLog mà không có Card.Review() xảy ra trước — convention enforce qua event flow, không phải type system.
+
+------------- sử dụng enum với các case mapping với database, nguồn dữ liệu với id không thay đổi-----------------

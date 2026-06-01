@@ -18,6 +18,11 @@
    Reminder email: hôm nay chưa review → 9h tối nhận email nhắc
 
 
+Streak-based: 3 ngày, 7 ngày, 30 ngày, 100 ngày liên tiếp
+Volume-based: Review 100 cards, 500 cards, 1000 cards tổng
+Mastery-based: Có 10 cards đạt interval > 30 ngày
+
+
 --------------------------------- Thuật toán SuperMemo ------------------------------------
 SM-2 algorithm:
     Ý tưởng : Thứ người dùng nhớ tốt thì ôn thưa hơn, thứ nhớ kém thì ôn dày hơn
@@ -55,3 +60,111 @@ ReviewLog
 ├── CardId
 ├── Quality         ← Again/Hard/Good/Easy
 └── ReviewedAt
+
+----------------------------------------------------
+
+UserBadges
+├── Id (uniqueidentifier, PK)
+├── UserId (uniqueidentifier, FK → UserProfiles.Id)
+├── BadgeCatalogId (int, FK → BadgeCatalog.Id)
+└── EarnedAt (datetime2, NOT NULL)
+
+UserProfiles
+├── Id (uniqueidentifier, PK + FK → AspNetUsers.Id)
+├── StreakCurrent (int, NOT NULL, default 0)
+├── StreakLongest (int, NOT NULL, default 0)
+├── LastReviewedDate (date, NULL)
+├── TimeZoneId (nvarchar(50), NOT NULL, default 'UTC')
+└── CreatedAt (datetime2, NOT NULL)
+
+
+BadgeCatalog
+├── Id (int, PK)              -- map với enum value
+├── Code (nvarchar(50), UNIQUE) -- "Streak7"
+├── Name (nvarchar(100))
+├── Description (nvarchar(500))
+└── IconPath (nvarchar(200))
+
+-- Constraints
+UNIQUE (UserId, BadgeCatalogId)  -- không earn 2 lần
+INDEX IX_UserBadges_UserId       -- query badges của 1 user
+
+----------------------------------Quy trình tư duy-----------------------------------------
+Bước 1 : Tìm candidates trong domain
+Từ Bussiness Rule : 
+	User review card -> streak tăng, có badges đơn giản. User có profile hiển thị streak + badges
+
+=> Extract được các candidates : User, Card ( đã có ), Streak, Badge, Profile 
+
+Bước 2 : 3 câu hỏi cho candidates :
+a. Thứ này có cần tồn tại độc lập không ?
+	Tức là: không cần context của thứ khác, nó vẫn có nghĩa?
+	Streak không có context của User → vô nghĩa. Streak của ai? → KHÔNG độc lập
+	Badge không có context của User → vô nghĩa. Badge của ai? → KHÔNG độc lập
+	UserProfile không có User → vô nghĩa → KHÔNG độc lập
+	User (AppUser) → tồn tại độc lập, là account → ĐỘC LẬP
+	→ Những thứ không độc lập = sống bên trong aggregate của thứ khác.
+
+b. Thứ này có cần phân biệt với instance khác cùng loại không ?
+	( Nếu 2 instance có cùng value thì có thể hoán đổi không )
+
+Streak:
+User A có Streak(current=5, longest=10)
+User B có Streak(current=5, longest=10)
+2 cái này hoán đổi được không? → Được — không ai cần phân biệt "Streak của A" với "Streak của B" vì Streak chỉ là tập hợp số liệu
+→ Value Object
+Không có nghiệp vụ nào cần Streak ngoài context UserProfile → không cần identity riêng → không cần UserId → VO sống trong aggregate.
+
+UserBadge:
+User A earn Streak7 ngày 1/1
+User B earn Streak7 ngày 1/1
+2 cái này hoán đổi được không? → Không — "badge của A" khác "badge của B" dù cùng loại
+→ Entity (cần ID để phân biệt ownership)
+
+Xem xét đến nếu nghiệp vụ yêu cầu query độc lập thì nên là Entity :
+Ví dụ Query riêng lấy ra người dùng đã kiếm huy hiệu Streak7 trong tháng 
+
+c. Ai giữ invariant ?
+Invariants của Sprint 5:
+
+Streak.Current >= 0
+Streak.Longest >= Streak.Current
+User không thể earn cùng 1 badge 2 lần
+
+"Không earn badge 2 lần" → cần nhìn vào danh sách badges đã có → không phải UserBadge tự biết được — cần context của toàn bộ collection → ai đó ở cấp cao hơn phải enforce.
+→ Cái "ai đó ở cấp cao hơn" đó = Aggregate Root.
+
+Bước 3 : Xác định AggregateRoot
+Aggregate Root là thứ:
+
+Chứa và bảo vệ các entities + VOs bên trong
+Enforce invariants cross-entity
+Là cánh cửa duy nhất từ bên ngoài vào
+
+Nhìn lại invariant "không earn badge 2 lần":
+Ai cần biết để enforce?
+→ Cần biết toàn bộ danh sách badges của user
+→ Cần biết user đó là ai
+→ Phải check trước khi add badge mới
+UserProfile là thứ duy nhất có đủ context đó. Nó chứa _badges, nó biết UserId, nó kiểm soát AwardBadge().
+→ UserProfile = Aggregate Root.
+
+Bước 4 — Xác định methods từ business behavior
+Đọc động từ trong business rules:
+
+User review hết cards → streak tăng → badge được trao
+User mở app → streak được tính lại
+User đăng ký → profile được tạo
+
+Mỗi động từ → 1 method trên đúng object chịu trách nhiệm:
+Động từ Ai chịu trách nhiệm  Method
+Streak tăng   Streak tự tính    Streak.RecordReview()
+Badge được traoUserProfile enforce invariantUserProfile.AwardBadge()
+Streak tính lại UserProfile orchestrate UserProfile.RecalculateStreak() 
+Profile được tạo UserProfile factoryUserProfile.Create()
+
+Quy tắc ngón tay cái: Method nằm trên object sở hữu data cần thiết để thực hiện hành động đó.
+Streak.RecordReview() nằm trên Streak vì chỉ cần Current, Longest, LastReviewedDate — data của chính nó.
+AwardBadge() nằm trên UserProfile vì cần _badges collection để check duplicate — data của UserProfile.
+
+

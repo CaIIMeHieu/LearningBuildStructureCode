@@ -19,6 +19,7 @@ public class ReviewCardCommandHandler : ICommandHandler<CommandSource.ReviewCard
 
         card.Review(request.Quality);
         _cardRepository.Update(card);
+        // raise event here 
         return Result.Success();
     }
 }
