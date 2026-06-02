@@ -1,4 +1,4 @@
-using Contract.Abstractions.Message;
+﻿using Contract.Abstractions.Message;
 using Contract.Abstractions.Shared;
 using Domain.Abstractions;
 
@@ -19,7 +19,8 @@ public class ReviewCardCommandHandler : ICommandHandler<CommandSource.ReviewCard
 
         card.Review(request.Quality);
         _cardRepository.Update(card);
-        // raise event here 
+        // query xem còn due cards ngày hôm nay không
+        var hasDueCards = await _cardRepository.FindSingleAsync(c => c.OwnerId == request.OwnerId && c.RecallDate <= DateTime.UtcNow);
         return Result.Success();
     }
 }

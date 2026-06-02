@@ -21,6 +21,8 @@ public class ApplicationDbContext : IdentityDbContext<Domain.Entities.AppUser,Id
     private DbSet<Domain.Entities.Deck> Decks => Set<Domain.Entities.Deck>();
     public DbSet<Domain.Entities.Card> Cards => Set<Domain.Entities.Card>();
     private DbSet<Domain.Entities.ReviewLog> ReviewLogs => Set<Domain.Entities.ReviewLog>();
+    private DbSet<Domain.Entities.UserProfile> UserProfiles => Set<Domain.Entities.UserProfile>();
+    private DbSet<Domain.Entities.UserBadge> UserBadges => Set<Domain.Entities.UserBadge>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

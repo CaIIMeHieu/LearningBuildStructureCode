@@ -33,9 +33,9 @@ public class Streak
     {
         if( reviewDate == LastReviewedDate ) return this; // không cập nhật nếu ngày review trùng với ngày review cuối cùng
         var isConsecutive = !hasMissedDays && LastReviewedDate.HasValue;
-        var newCurrent = isConsecutive ? Current + 1 : 0; // nếu có bỏ lỡ ngày nào thì reset current về 0, nếu không thì tăng current lên 1
+        var newCurrent = isConsecutive ? Current + 1 : 1; // nếu có bỏ lỡ ngày nào thì reset current về 0, nếu không thì tăng current lên 1
         var newLongest = Math.Max(Longest, newCurrent); // cập nhật longest nếu current mới lớn hơn longest
         return new Streak(newCurrent, newLongest, reviewDate);
     }
-    tại sao method này lại nằm trong Streak
+    //tại sao method này lại nằm trong Streak ( method nằm trong object sở hữu data để thực hiện hành động đó )
 }
