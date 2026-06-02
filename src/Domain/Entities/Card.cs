@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Contract.Abstractions.Message;
 using Domain.Abstractions.Entities;
 using Domain.Constants;
+using static Domain.Entities.UserProfile;
 
 namespace Domain.Entities;
 
@@ -78,6 +79,11 @@ public class Card : AggregateRoot
         }
         RecallDate = DateTime.UtcNow.AddDays(Interval);
         RaiseDomainEvent(new CardReviewedEvent(Id, DeckId, OwnerId, quality));
+    }
+
+    public void MarkAllCardsReviewed(Guid userId, DateOnly reviewDate)
+    {
+        RaiseDomainEvent(new AllCardsReviewedEvent(Id, userId, reviewDate));
     }
 
     public record CardCreatedEvent(Guid Id, Guid DeckId, Guid OwnerId) : IDomain;
