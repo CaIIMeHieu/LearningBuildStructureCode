@@ -21,10 +21,15 @@ public class ReviewCardCommandHandler : ICommandHandler<CommandSource.ReviewCard
         card.Review(request.Quality);
         _cardRepository.Update(card);
         // query xem còn due cards ngày hôm nay không
+        var todayStart = DateTime.UtcNow.Date;
+        var todayEnd = todayStart.AddDays(1);
+
         var stillHasDueCards = await _cardRepository.FindSingleAsync(
-        c => c.OwnerId == request.OwnerId && c.RecallDate <= DateTime.UtcNow,
-        cancellationToken);
-        if( stillHasDueCards is null )
+            c => c.OwnerId == request.OwnerId
+              && c.RecallDate >= todayStart
+              && c.RecallDate < todayEnd,
+            cancellationToken);
+        if ( stillHasDueCards is null )
         {
             var today = DateOnly.FromDateTime(DateTime.UtcNow);
             // card.RaiseDomainEvent(new AllCardsReviewedEvent(card.Id, request.OwnerId, today)); raise lỗi vì protected method chỉ gọi được ở trong class con kế thừa

@@ -29,5 +29,6 @@ public class CardConfiguration : IEntityTypeConfiguration<Domain.Entities.Card>
                .HasForeignKey(c => c.DeckId)
                .OnDelete(DeleteBehavior.Cascade);
         builder.HasIndex(c => new { c.DeckId, c.RecallDate });
+        builder.HasIndex(c => new { c.OwnerId, c.Interval });
     }
 }

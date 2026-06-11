@@ -19,9 +19,11 @@ public class ReviewLogConfiguration : IEntityTypeConfiguration<Domain.Entities.R
         .IsRequired()
         .HasMaxLength(10);
         builder.Property(rl => rl.ReviewDate).IsRequired();
+        builder.Property(rl => rl.OwnerId).IsRequired();
+
         builder.HasOne<Domain.Entities.Card>()
                .WithMany()
                .HasForeignKey(rl => rl.CardId)
-               .OnDelete(DeleteBehavior.Cascade);
+               .OnDelete(DeleteBehavior.Cascade);        
     }
 }

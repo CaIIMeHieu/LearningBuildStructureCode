@@ -19,14 +19,16 @@ public class RegisterCommandHandler : ICommandHandler<CommandSource.RegisterComm
     private readonly UserManager<AppUser> _userManager;
     private readonly IJwtTokenService _jwtService;
     private readonly IRepositoryBase<RefreshToken, Guid> _refreshTokenRepository;
+    private readonly IRepositoryBase<Domain.Entities.UserProfile, Guid> _userProfileRepo;
     private readonly IUnitOfWork _unitOfWork;
 
-    public RegisterCommandHandler(UserManager<AppUser> userManager, IJwtTokenService jwtTokenService, IRepositoryBase<RefreshToken, Guid> refreshTokenRepository, IUnitOfWork unitOfWork)
+    public RegisterCommandHandler(UserManager<AppUser> userManager, IJwtTokenService jwtTokenService, IRepositoryBase<RefreshToken, Guid> refreshTokenRepository, IRepositoryBase<Domain.Entities.UserProfile, Guid> userProfileRepo, IUnitOfWork unitOfWork)
     {
         _userManager = userManager;
         _jwtService = jwtTokenService;
         _refreshTokenRepository = refreshTokenRepository;
         _unitOfWork = unitOfWork;
+        _userProfileRepo = userProfileRepo;
     }
     public async Task<Result<Response.LoginResponse>> Handle(CommandSource.RegisterCommand request, CancellationToken cancellationToken)
     {
@@ -51,7 +53,11 @@ public class RegisterCommandHandler : ICommandHandler<CommandSource.RegisterComm
         var accessToken = _jwtService.GenerateAccessToken(user, roles);
         var refreshTokenString = RefreshToken.GenerateRefreshToken();
         var refreshToken = RefreshToken.Create(user.Id, request.DeviceId, refreshTokenString, DateTime.UtcNow.AddDays(7));
+        var profile = Domain.Entities.UserProfile.Create(user.Id, "UTC");
+
         _refreshTokenRepository.Add(refreshToken);
+        _userProfileRepo.Add(profile);
+
         await _unitOfWork.SaveChangesAsync(cancellationToken);
         return Result.Success(new Response.LoginResponse(accessToken,refreshTokenString));
 

@@ -12,6 +12,7 @@ public class UserProfile : AggregateRoot
     public string TimeZoneId { get; private set; } = "UTC";
     public DateTime  CreatedAt { get; private set; }
     public Streak Streak { get; private set; } = Streak.New();
+    public int TotalReviews { get; private set; } = 0;
     // Kiểm soát việc người dùng có thể tương tác với Badge, chỉ có thể chỉnh sửa thông qua UserProfile
     private readonly List<UserBadge> _badges = new();
     public IReadOnlyList<UserBadge> Badges => _badges.AsReadOnly();
@@ -76,6 +77,11 @@ public class UserProfile : AggregateRoot
         var newBadge = UserBadge.Create(Id, badgeType);
         _badges.Add(newBadge);
         RaiseDomainEvent(new BadgeEarnedEvent(Id, badgeType));
+    }
+
+    public void IncrementReviewCount()
+    {
+        TotalReviews++;
     }
 
     // Raise từ UserProfile khi streak tăng

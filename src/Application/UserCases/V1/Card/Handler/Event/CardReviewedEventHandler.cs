@@ -1,4 +1,4 @@
-using Contract.Abstractions.Message;
+﻿using Contract.Abstractions.Message;
 using Domain.Abstractions;
 using Domain.Entities;
 using static Domain.Entities.Card;
@@ -7,16 +7,30 @@ namespace Application.UserCases.V1.Card.Handler.Event;
 
 public class CardReviewedEventHandler : IDomainHandler<CardReviewedEvent>
 {
-    private readonly IRepositoryBase<ReviewLog, Guid> _reviewLogRepository;
+    private readonly IRepositoryBase<ReviewLog, Guid> _reviewLogRepo;
+    private readonly IRepositoryBase<Domain.Entities.UserProfile, Guid> _userProfileRepo;
 
-    public CardReviewedEventHandler(IRepositoryBase<ReviewLog, Guid> reviewLogRepository)
-        => _reviewLogRepository = reviewLogRepository;
-
-    public Task Handle(CardReviewedEvent notification, CancellationToken cancellationToken)
+    public CardReviewedEventHandler(
+        IRepositoryBase<ReviewLog, Guid> reviewLogRepo,
+        IRepositoryBase<Domain.Entities.UserProfile, Guid> userProfileRepo)
     {
-        var reviewLog = ReviewLog.Create(notification.Id, notification.Quality);
-        _reviewLogRepository.Add(reviewLog);
-        Console.WriteLine($"Card reviewed: {notification.Id} by owner {notification.OwnerId}");
-        return Task.CompletedTask;
+        _reviewLogRepo = reviewLogRepo;
+        _userProfileRepo = userProfileRepo;
+    }
+
+    public async Task Handle(CardReviewedEvent notification, CancellationToken cancellationToken)
+    {
+        // Save review log (đã có sẵn)
+        var reviewLog = ReviewLog.Create(notification.Id, notification.Quality, notification.OwnerId);
+        _reviewLogRepo.Add(reviewLog);
+
+        // Increment counter cho user
+        var profile = await _userProfileRepo.FindByIdAsync(
+            notification.OwnerId, cancellationToken);
+        if (profile is not null)
+        {
+            profile.IncrementReviewCount();
+            _userProfileRepo.Update(profile);
+        }
     }
 }

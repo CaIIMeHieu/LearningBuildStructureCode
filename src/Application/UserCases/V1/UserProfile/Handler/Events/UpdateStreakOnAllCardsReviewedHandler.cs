@@ -27,10 +27,8 @@ public class UpdateStreakOnAllCardsReviewedHandler : IDomainHandler<Domain.Entit
     {
         // Update user profile streak logic here
         // Query xem user có bị miss mất ngày nào không review không  
-        var userProfile = await _userProfileRepository.FindByIdAsync(notification.UserId);
-        if (userProfile is null)
-            throw new InvalidOperationException(
-                $"UserProfile {notification.UserId} not found.");
+        var userProfile = await _userProfileRepository.FindByIdAsync(notification.UserId);        
+        _ = userProfile ?? throw new InvalidOperationException($"UserProfile with ID {notification.UserId} not found.");
 
         bool hasMissedDays = false;
         var lastReviewedDate = userProfile.Streak.LastReviewedDate;

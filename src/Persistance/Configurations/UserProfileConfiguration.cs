@@ -44,6 +44,10 @@ public class UserProfileConfiguration : IEntityTypeConfiguration<UserProfile>
             streakBuilder.Property(s => s.LastReviewedDate)
                 .HasColumnName("LastReviewedDate")
                 .IsRequired(false);
+
+            builder.Property(u => u.TotalReviews)
+                    .HasDefaultValue(0)
+                    .IsRequired();
         });
 
         // UserBadge là Entity → bảng riêng → HasMany
